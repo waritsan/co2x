@@ -196,7 +196,7 @@ export default function Home() {
             <select
               value={selectedProduct ? selectedProduct.id : ''}
               onChange={(e) => {
-                const product = marketData.find(p => p.id === parseInt(e.target.value));
+                const product = marketData.find(p => p.id === parseInt(e.target.value)) || null;
                 setSelectedProduct(product);
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
