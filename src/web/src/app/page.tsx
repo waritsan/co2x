@@ -13,6 +13,22 @@ type MarketItem = {
   buyer: string;
 };
 
+type Seller = {
+  id: number;
+  name: string;
+  credits: number;
+  rating: number;
+  location: string;
+};
+
+type Buyer = {
+  id: number;
+  name: string;
+  demand: number;
+  rating: number;
+  location: string;
+};
+
 type Transaction = {
   type: string;
   product: string;
@@ -25,7 +41,7 @@ type Transaction = {
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<MarketItem | Seller | Buyer | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [userCredits, setUserCredits] = useState(1250);
   const [userBalance, setUserBalance] = useState(625000); // THB
