@@ -96,23 +96,24 @@ export default function GamePage() {
                 }}
               >
                 {prizes.map((prize, index) => {
-                  const angle = (360 / prizes.length) * index;
+                  const angle = (360 / prizes.length) * index + (360 / prizes.length) / 2;
+                  const radian = (angle * Math.PI) / 180;
+                  const radius = 120; // distance from center
+                  const x = Math.cos(radian) * radius;
+                  const y = Math.sin(radian) * radius;
+
                   return (
                     <div
                       key={index}
-                      className="absolute w-full h-full flex items-center justify-center text-white font-bold text-lg"
+                      className="absolute text-white font-bold text-lg"
                       style={{
-                        transform: `rotate(${angle + (360 / prizes.length) / 2}deg)`,
+                        left: '50%',
+                        top: '50%',
+                        transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                       }}
                     >
-                      <span
-                        style={{
-                          transform: `rotate(${(360 / prizes.length) / 2}deg)`,
-                          textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                        }}
-                      >
-                        {prize.label}
-                      </span>
+                      {prize.label}
                     </div>
                   );
                 })}
