@@ -100,7 +100,7 @@ export default function GamePage() {
                   return (
                     <div
                       key={index}
-                      className="absolute w-full h-full flex items-center justify-center text-white font-bold text-sm"
+                      className="absolute w-full h-full flex items-center justify-center text-white font-bold text-lg"
                       style={{
                         transform: `rotate(${angle + (360 / prizes.length) / 2}deg)`,
                       }}
@@ -108,6 +108,7 @@ export default function GamePage() {
                       <span
                         style={{
                           transform: `rotate(${(360 / prizes.length) / 2}deg)`,
+                          textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                         }}
                       >
                         {prize.label}
