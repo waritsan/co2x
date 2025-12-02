@@ -12,6 +12,7 @@ const prizes = [
 export default function GamePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [winningAngle, setWinningAngle] = useState<number | null>(null);
   const [userCredits, setUserCredits] = useState(1250);
 
   const spinWheel = () => {
@@ -19,6 +20,7 @@ export default function GamePage() {
 
     setIsSpinning(true);
     setResult(null);
+    setWinningAngle(null);
 
     // Select random prize based on probability
     const random = Math.random();
@@ -46,6 +48,7 @@ export default function GamePage() {
     setTimeout(() => {
       setIsSpinning(false);
       setResult(selectedPrize.label);
+      setWinningAngle(segmentAngle * prizes.indexOf(selectedPrize));
 
       // Update credits if won
       if (selectedPrize.label !== 'ลองใหม่') {
@@ -119,6 +122,17 @@ export default function GamePage() {
                   );
                 })}
               </div>
+
+              {/* Winning Highlight */}
+              {winningAngle !== null && !isSpinning && (
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: `conic-gradient(transparent ${winningAngle}deg, rgba(255,255,255,0.3) ${winningAngle}deg, rgba(255,255,255,0.3) ${winningAngle + 360 / prizes.length}deg, transparent ${winningAngle + 360 / prizes.length}deg)`,
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
             </div>
 
             {/* Spin Button */}
