@@ -6,12 +6,14 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedItem, setSelectedItem] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [userCredits, setUserCredits] = useState(1250);
   const [userBalance, setUserBalance] = useState(625000); // THB
   const [transactions, setTransactions] = useState([]);
   const [buyAmount, setBuyAmount] = useState('');
   const [sellAmount, setSellAmount] = useState('');
   const [message, setMessage] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Mock data for Thailand T-VER market
   const marketData = [
@@ -54,16 +56,20 @@ export default function Home() {
       setMessage('กรุณาป้อนจำนวนที่ถูกต้อง');
       return;
     }
-    const cost = amount * 1250; // Assume average price
+    if (!selectedProduct) {
+      setMessage('กรุณาเลือกผลิตภัณฑ์');
+      return;
+    }
+    const cost = amount * selectedProduct.price;
     if (cost > userBalance) {
       setMessage('ยอดเงินไม่เพียงพอ');
       return;
     }
     setUserCredits(userCredits + amount);
     setUserBalance(userBalance - cost);
-    setTransactions([...transactions, { type: 'ซื้อ', amount, cost, date: new Date().toLocaleString('th-TH') }]);
+    setTransactions([...transactions, { type: 'ซื้อ', product: selectedProduct.project, amount, cost, date: new Date().toLocaleString('th-TH') }]);
     setBuyAmount('');
-    setMessage(`ซื้อเครดิต ${amount} tCO2e สำเร็จ`);
+    setMessage(`ซื้อ ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
     setTimeout(() => setMessage(''), 3000);
   };
 
@@ -73,16 +79,20 @@ export default function Home() {
       setMessage('กรุณาป้อนจำนวนที่ถูกต้อง');
       return;
     }
+    if (!selectedProduct) {
+      setMessage('กรุณาเลือกผลิตภัณฑ์');
+      return;
+    }
     if (amount > userCredits) {
       setMessage('เครดิตไม่เพียงพอ');
       return;
     }
-    const revenue = amount * 1250;
+    const revenue = amount * selectedProduct.price;
     setUserCredits(userCredits - amount);
     setUserBalance(userBalance + revenue);
-    setTransactions([...transactions, { type: 'ขาย', amount, revenue, date: new Date().toLocaleString('th-TH') }]);
+    setTransactions([...transactions, { type: 'ขาย', product: selectedProduct.project, amount, revenue, date: new Date().toLocaleString('th-TH') }]);
     setSellAmount('');
-    setMessage(`ขายเครดิต ${amount} tCO2e สำเร็จ`);
+    setMessage(`ขาย ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
     setTimeout(() => setMessage(''), 3000);
   };
 
@@ -161,6 +171,24 @@ export default function Home() {
               {message}
             </div>
           )}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">เลือกผลิตภัณฑ์</label>
+            <select
+              value={selectedProduct ? selectedProduct.id : ''}
+              onChange={(e) => {
+                const product = marketData.find(p => p.id === parseInt(e.target.value));
+                setSelectedProduct(product);
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">เลือกผลิตภัณฑ์...</option>
+              {marketData.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.project} - ฿{product.price}/tCO2e
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">ซื้อเครดิต</label>
@@ -174,7 +202,8 @@ export default function Home() {
                 />
                 <button
                   onClick={handleBuy}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                  disabled={!selectedProduct}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
                 >
                   ซื้อ
                 </button>
@@ -192,13 +221,21 @@ export default function Home() {
                 />
                 <button
                   onClick={handleSell}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  disabled={!selectedProduct}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-gray-400"
                 >
                   ขาย
                 </button>
               </div>
             </div>
           </div>
+          {selectedProduct && (
+            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+              <p className="text-sm text-blue-800">
+                <strong>ผลิตภัณฑ์ที่เลือก:</strong> {selectedProduct.project} (ราคา: ฿{selectedProduct.price}/tCO2e)
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Market Overview */}
@@ -228,7 +265,7 @@ export default function Home() {
                     <td className="px-4 py-2 text-sm">{item.volume} tCO2e</td>
                     <td className="px-4 py-2 text-sm">
                       <button
-                        onClick={() => setSelectedItem(item)}
+                        onClick={() => { setSelectedItem(item); setShowDetailsModal(true); }}
                         className="text-blue-600 hover:text-blue-800"
                       >
                         รายละเอียด
@@ -249,6 +286,7 @@ export default function Home() {
               <thead>
                 <tr className="bg-gray-50">
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ประเภท</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ผลิตภัณฑ์</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">จำนวน</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">มูลค่า</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">วันที่</th>
@@ -258,6 +296,7 @@ export default function Home() {
                 {transactions.slice(-10).reverse().map((tx, index) => (
                   <tr key={index} className="border-t">
                     <td className="px-4 py-2 text-sm">{tx.type}</td>
+                    <td className="px-4 py-2 text-sm">{tx.product}</td>
                     <td className="px-4 py-2 text-sm">{tx.amount} tCO2e</td>
                     <td className="px-4 py-2 text-sm">฿{(tx.cost || tx.revenue).toLocaleString()}</td>
                     <td className="px-4 py-2 text-sm">{tx.date}</td>
@@ -287,7 +326,7 @@ export default function Home() {
                       <p className="text-sm">คะแนน: {seller.rating}/5</p>
                     </div>
                     <button
-                      onClick={() => setSelectedItem(seller)}
+                      onClick={() => { setSelectedItem(seller); setShowDetailsModal(true); }}
                       className="text-blue-600 hover:text-blue-800 text-sm"
                     >
                       ดูรายละเอียด
@@ -313,7 +352,7 @@ export default function Home() {
                         <p className="text-sm">คะแนน: {buyer.rating}/5</p>
                       </div>
                       <button
-                        onClick={() => setSelectedItem(buyer)}
+                        onClick={() => { setSelectedItem(buyer); setShowDetailsModal(true); }}
                         className="text-blue-600 hover:text-blue-800 text-sm"
                       >
                         ดูรายละเอียด
@@ -325,37 +364,56 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </main>
 
-        {/* Transaction History */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">ประวัติการซื้อขาย</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ประเภท</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">จำนวน</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">มูลค่า</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">วันที่</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.slice(-10).reverse().map((tx, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="px-4 py-2 text-sm">{tx.type}</td>
-                    <td className="px-4 py-2 text-sm">{tx.amount} tCO2e</td>
-                    <td className="px-4 py-2 text-sm">฿{(tx.cost || tx.revenue).toLocaleString()}</td>
-                    <td className="px-4 py-2 text-sm">{tx.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {transactions.length === 0 && (
-              <p className="text-center text-gray-500 py-4">ยังไม่มีประวัติการซื้อขาย</p>
-            )}
+      {/* Details Modal */}
+      {showDetailsModal && selectedItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-semibold">
+                {selectedItem.project || selectedItem.name}
+              </h3>
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2">
+              {selectedItem.project ? (
+                <>
+                  <p><strong>ประเภท:</strong> {selectedItem.type}</p>
+                  <p><strong>ราคา:</strong> ฿{selectedItem.price}/tCO2e</p>
+                  <p><strong>เปลี่ยนแปลง:</strong> {selectedItem.change > 0 ? '+' : ''}{selectedItem.change}%</p>
+                  <p><strong>ปริมาณ:</strong> {selectedItem.volume} tCO2e</p>
+                  <p><strong>ผู้ขาย:</strong> {selectedItem.seller}</p>
+                  <p><strong>ผู้ซื้อ:</strong> {selectedItem.buyer}</p>
+                </>
+              ) : (
+                <>
+                  <p><strong>สถานที่:</strong> {selectedItem.location}</p>
+                  {selectedItem.credits ? (
+                    <p><strong>เครดิตที่มี:</strong> {selectedItem.credits} tCO2e</p>
+                  ) : (
+                    <p><strong>ความต้องการ:</strong> {selectedItem.demand} tCO2e</p>
+                  )}
+                  <p><strong>คะแนน:</strong> {selectedItem.rating}/5</p>
+                </>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                ปิด
+              </button>
+            </div>
           </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }
