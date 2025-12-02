@@ -12,7 +12,6 @@ const prizes = [
 export default function GamePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const [winningAngle, setWinningAngle] = useState<number | null>(null);
   const [userCredits, setUserCredits] = useState(1250);
 
   const spinWheel = () => {
@@ -20,7 +19,6 @@ export default function GamePage() {
 
     setIsSpinning(true);
     setResult(null);
-    setWinningAngle(null);
 
     // Select random prize based on probability
     const random = Math.random();
@@ -48,7 +46,6 @@ export default function GamePage() {
     setTimeout(() => {
       setIsSpinning(false);
       setResult(selectedPrize.label);
-      setWinningAngle(segmentAngle * prizes.indexOf(selectedPrize));
 
       // Update credits if won
       if (selectedPrize.label !== 'ลองใหม่') {
@@ -85,8 +82,8 @@ export default function GamePage() {
           <div className="flex flex-col items-center">
             <div className="relative mb-8">
               {/* Pointer */}
-              <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10 transition-all duration-500 ${result ? 'scale-125 drop-shadow-lg' : ''}`}>
-                <div className={`w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent ${result ? 'border-b-yellow-400' : 'border-b-red-600'}`}></div>
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10">
+                <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600"></div>
               </div>
 
               {/* Wheel */}
@@ -122,17 +119,6 @@ export default function GamePage() {
                   );
                 })}
               </div>
-
-              {/* Winning Highlight */}
-              {winningAngle !== null && !isSpinning && (
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: `conic-gradient(transparent ${winningAngle}deg, rgba(255,255,255,0.3) ${winningAngle}deg, rgba(255,255,255,0.3) ${winningAngle + 360 / prizes.length}deg, transparent ${winningAngle + 360 / prizes.length}deg)`,
-                    pointerEvents: 'none',
-                  }}
-                />
-              )}
             </div>
 
             {/* Spin Button */}
