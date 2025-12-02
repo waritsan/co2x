@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import Link from 'next/link';
 
 type MarketItem = {
   id: number;
@@ -139,7 +137,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <h1 className="text-2xl font-bold text-green-600">WinFor.Earth: A Green Lottery Platform</h1>
-            <div className="text-sm text-gray-600">แอปเดโม</div>
+            <div className="flex items-center space-x-4">
+              <Link href="/game" className="text-green-600 hover:text-green-800 font-medium">
+                เกมลอตเตอรี่
+              </Link>
+              <div className="text-sm text-gray-600">แอปเดโม</div>
+            </div>
           </div>
         </div>
       </header>
