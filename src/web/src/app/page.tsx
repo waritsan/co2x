@@ -6,6 +6,12 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedItem, setSelectedItem] = useState(null);
+  const [userCredits, setUserCredits] = useState(1250);
+  const [userBalance, setUserBalance] = useState(625000); // THB
+  const [transactions, setTransactions] = useState([]);
+  const [buyAmount, setBuyAmount] = useState('');
+  const [sellAmount, setSellAmount] = useState('');
+  const [message, setMessage] = useState('');
 
   // Mock data for Thailand T-VER market
   const marketData = [
@@ -42,6 +48,44 @@ export default function Home() {
     buyer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleBuy = () => {
+    const amount = parseInt(buyAmount);
+    if (!amount || amount <= 0) {
+      setMessage('กรุณาป้อนจำนวนที่ถูกต้อง');
+      return;
+    }
+    const cost = amount * 1250; // Assume average price
+    if (cost > userBalance) {
+      setMessage('ยอดเงินไม่เพียงพอ');
+      return;
+    }
+    setUserCredits(userCredits + amount);
+    setUserBalance(userBalance - cost);
+    setTransactions([...transactions, { type: 'ซื้อ', amount, cost, date: new Date().toLocaleString('th-TH') }]);
+    setBuyAmount('');
+    setMessage(`ซื้อเครดิต ${amount} tCO2e สำเร็จ`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const handleSell = () => {
+    const amount = parseInt(sellAmount);
+    if (!amount || amount <= 0) {
+      setMessage('กรุณาป้อนจำนวนที่ถูกต้อง');
+      return;
+    }
+    if (amount > userCredits) {
+      setMessage('เครดิตไม่เพียงพอ');
+      return;
+    }
+    const revenue = amount * 1250;
+    setUserCredits(userCredits - amount);
+    setUserBalance(userBalance + revenue);
+    setTransactions([...transactions, { type: 'ขาย', amount, revenue, date: new Date().toLocaleString('th-TH') }]);
+    setSellAmount('');
+    setMessage(`ขายเครดิต ${amount} tCO2e สำเร็จ`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -71,17 +115,17 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-gray-900">ยอดคงเหลือคาร์บอน</h3>
-            <p className="text-3xl font-bold text-green-600 mt-2">1,250 tCO2e</p>
+            <p className="text-3xl font-bold text-green-600 mt-2">{userCredits.toLocaleString()} tCO2e</p>
             <p className="text-sm text-gray-500">เครดิตที่มีอยู่</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-gray-900">มูลค่าพอร์ต</h3>
-            <p className="text-3xl font-bold text-blue-600 mt-2">฿625,000</p>
+            <p className="text-3xl font-bold text-blue-600 mt-2">฿{userBalance.toLocaleString()}</p>
             <p className="text-sm text-gray-500">+5.2% ในเดือนนี้</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-gray-900">การซื้อขายที่ใช้งานอยู่</h3>
-            <p className="text-3xl font-bold text-purple-600 mt-2">3</p>
+            <p className="text-3xl font-bold text-purple-600 mt-2">{transactions.length}</p>
             <p className="text-sm text-gray-500">รอการชำระ</p>
           </div>
         </div>
@@ -112,6 +156,11 @@ export default function Home() {
         {/* Trading Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">การซื้อขายด่วน</h2>
+          {message && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+              {message}
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">ซื้อเครดิต</label>
@@ -119,9 +168,14 @@ export default function Home() {
                 <input
                   type="number"
                   placeholder="จำนวน (tCO2e)"
+                  value={buyAmount}
+                  onChange={(e) => setBuyAmount(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
-                <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                <button
+                  onClick={handleBuy}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                >
                   ซื้อ
                 </button>
               </div>
@@ -132,9 +186,14 @@ export default function Home() {
                 <input
                   type="number"
                   placeholder="จำนวน (tCO2e)"
+                  value={sellAmount}
+                  onChange={(e) => setSellAmount(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
-                <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                <button
+                  onClick={handleSell}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                >
                   ขาย
                 </button>
               </div>
@@ -179,6 +238,36 @@ export default function Home() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Transaction History */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">ประวัติการซื้อขาย</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ประเภท</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">จำนวน</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">มูลค่า</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">วันที่</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.slice(-10).reverse().map((tx, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="px-4 py-2 text-sm">{tx.type}</td>
+                    <td className="px-4 py-2 text-sm">{tx.amount} tCO2e</td>
+                    <td className="px-4 py-2 text-sm">฿{(tx.cost || tx.revenue).toLocaleString()}</td>
+                    <td className="px-4 py-2 text-sm">{tx.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {transactions.length === 0 && (
+              <p className="text-center text-gray-500 py-4">ยังไม่มีประวัติการซื้อขาย</p>
+            )}
           </div>
         </div>
 
@@ -237,47 +326,35 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Details Modal */}
-        {selectedItem && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-semibold mb-4">รายละเอียด</h3>
-              {selectedItem.project ? (
-                // Market item details
-                <div>
-                  <p><strong>โครงการ:</strong> {selectedItem.project}</p>
-                  <p><strong>ประเภท:</strong> {selectedItem.type}</p>
-                  <p><strong>ราคา:</strong> ฿{selectedItem.price}</p>
-                  <p><strong>ผู้ขาย:</strong> {selectedItem.seller}</p>
-                  <p><strong>ผู้ซื้อ:</strong> {selectedItem.buyer}</p>
-                  <p><strong>ปริมาณ:</strong> {selectedItem.volume} tCO2e</p>
-                </div>
-              ) : selectedItem.credits ? (
-                // Seller details
-                <div>
-                  <p><strong>ชื่อ:</strong> {selectedItem.name}</p>
-                  <p><strong>สถานที่:</strong> {selectedItem.location}</p>
-                  <p><strong>เครดิตที่มี:</strong> {selectedItem.credits} tCO2e</p>
-                  <p><strong>คะแนน:</strong> {selectedItem.rating}/5</p>
-                </div>
-              ) : (
-                // Buyer details
-                <div>
-                  <p><strong>ชื่อ:</strong> {selectedItem.name}</p>
-                  <p><strong>สถานที่:</strong> {selectedItem.location}</p>
-                  <p><strong>ความต้องการ:</strong> {selectedItem.demand} tCO2e</p>
-                  <p><strong>คะแนน:</strong> {selectedItem.rating}/5</p>
-                </div>
-              )}
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-              >
-                ปิด
-              </button>
-            </div>
+        {/* Transaction History */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold mb-4">ประวัติการซื้อขาย</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ประเภท</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">จำนวน</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">มูลค่า</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">วันที่</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.slice(-10).reverse().map((tx, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="px-4 py-2 text-sm">{tx.type}</td>
+                    <td className="px-4 py-2 text-sm">{tx.amount} tCO2e</td>
+                    <td className="px-4 py-2 text-sm">฿{(tx.cost || tx.revenue).toLocaleString()}</td>
+                    <td className="px-4 py-2 text-sm">{tx.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {transactions.length === 0 && (
+              <p className="text-center text-gray-500 py-4">ยังไม่มีประวัติการซื้อขาย</p>
+            )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
