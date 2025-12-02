@@ -156,5 +156,4 @@ export default function GamePage() {
       </main>
     </div>
   );
-}</content>
-<parameter name="filePath">/Users/waritsan/Developer/co2x/src/web/src/app/game/page.tsx
+}
