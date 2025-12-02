@@ -13,6 +13,15 @@ type MarketItem = {
   buyer: string;
 };
 
+type Transaction = {
+  type: string;
+  product: string;
+  amount: number;
+  cost?: number;
+  revenue?: number;
+  date: string;
+};
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -20,7 +29,7 @@ export default function Home() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [userCredits, setUserCredits] = useState(1250);
   const [userBalance, setUserBalance] = useState(625000); // THB
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [buyAmount, setBuyAmount] = useState('');
   const [sellAmount, setSellAmount] = useState('');
   const [message, setMessage] = useState('');
@@ -113,7 +122,7 @@ export default function Home() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-green-600">การซื้อขายเครดิตคาร์บอน CO2X</h1>
+            <h1 className="text-2xl font-bold text-green-600">WinFor.Earth: A Green Lottery Platform</h1>
             <div className="text-sm text-gray-600">แอปเดโม</div>
           </div>
         </div>
