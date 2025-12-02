@@ -2,6 +2,17 @@
 
 import { useState } from 'react';
 
+type MarketItem = {
+  id: number;
+  project: string;
+  price: number;
+  change: number;
+  volume: number;
+  type: string;
+  seller: string;
+  buyer: string;
+};
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -13,7 +24,7 @@ export default function Home() {
   const [buyAmount, setBuyAmount] = useState('');
   const [sellAmount, setSellAmount] = useState('');
   const [message, setMessage] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<MarketItem | null>(null);
 
   // Mock data for Thailand T-VER market
   const marketData = [
