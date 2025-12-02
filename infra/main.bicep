@@ -63,18 +63,6 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
   }
 }
 
-
-
-module staticwebapp './core/host/staticwebapp.bicep' = {
-  name: 'staticwebapp'
-  scope: rg
-  params: {
-    name: '${abbrs.webStaticSites}${environmentName}'
-    location: location
-    tags: union(tags, { 'azd-service-name': webServiceName })
-  }
-}
-
 // Add outputs from the deployment here, if needed.
 //
 // This allows the outputs to be referenced by other bicep deployments in the deployment pipeline,
