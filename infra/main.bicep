@@ -58,7 +58,7 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
   scope: rg
   params: {
     name: '${abbrs.webStaticSites}${environmentName}'
-    location: location
+    location: 'eastasia'
     tags: union(tags, { 'azd-service-name': webServiceName })
   }
 }
