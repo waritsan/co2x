@@ -11,7 +11,7 @@ param sku object = {
 resource web 'Microsoft.Web/staticSites@2022-03-01' = {
   name: name
   location: location
-  tags: union(tags, { 'azd-service-name': 'web' })
+  tags: tags
   sku: sku
   properties: {
     provider: 'Custom'
