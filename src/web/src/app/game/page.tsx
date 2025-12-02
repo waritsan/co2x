@@ -1,19 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const prizes = [
-  { label: '100 tCO2e', color: '#10B981', probability: 0.3 },
-  { label: '500 tCO2e', color: '#059669', probability: 0.2 },
-  { label: '1000 tCO2e', color: '#047857', probability: 0.1 },
-  { label: 'ลองใหม่', color: '#DC2626', probability: 0.4 },
+  { label: '100 tCO2e', color: '#10B981', probability: 0.4 },
+  { label: '500 tCO2e', color: '#059669', probability: 0.3 },
+  { label: '1000 tCO2e', color: '#047857', probability: 0.2 },
+  { label: '2000 tCO2e', color: '#DC2626', probability: 0.1 },
 ];
 
 export default function GamePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [userCredits, setUserCredits] = useState(1250);
+
+  useEffect(() => {
+    const savedCredits = localStorage.getItem('userCredits');
+    if (savedCredits) {
+      setUserCredits(parseInt(savedCredits));
+    }
+  }, []);
 
   const spinWheel = () => {
     if (isSpinning) return;
@@ -48,11 +55,13 @@ export default function GamePage() {
       setIsSpinning(false);
       setResult(selectedPrize.label);
 
-      // Update credits if won
-      if (selectedPrize.label !== 'ลองใหม่') {
-        const amount = parseInt(selectedPrize.label.split(' ')[0]);
-        setUserCredits(prev => prev + amount);
-      }
+      // Update credits
+      const amount = parseInt(selectedPrize.label.split(' ')[0]);
+      setUserCredits(prev => {
+        const newCredits = prev + amount;
+        localStorage.setItem('userCredits', newCredits.toString());
+        return newCredits;
+      });
     }, 3000);
   };
 
@@ -147,11 +156,9 @@ export default function GamePage() {
                 <p className="text-lg font-semibold text-blue-800">
                   คุณได้: {result}
                 </p>
-                {result !== 'ลองใหม่' && (
-                  <p className="text-sm text-blue-600 mt-2">
-                    เครดิตถูกเพิ่มเข้าบัญชีแล้ว!
-                  </p>
-                )}
+                <p className="text-sm text-blue-600 mt-2">
+                  เครดิตถูกเพิ่มเข้าบัญชีแล้ว!
+                </p>
               </div>
             )}
           </div>
@@ -162,8 +169,7 @@ export default function GamePage() {
           <h2 className="text-xl font-semibold mb-4">กฎของเกม</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700">
             <li>หมุนวงล้อเพื่อลุ้นรับเครดิตคาร์บอน</li>
-            <li>รางวัลต่างๆ: 100, 500, หรือ 1000 tCO2e</li>
-            <li>หากได้ &quot;ลองใหม่&quot; สามารถหมุนได้อีกครั้ง</li>
+            <li>รางวัลต่างๆ: 100, 500, 1000, หรือ 2000 tCO2e</li>
             <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
           </ul>
         </div>

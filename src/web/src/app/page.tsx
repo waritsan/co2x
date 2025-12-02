@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 type MarketItem = {
@@ -51,6 +51,13 @@ export default function Home() {
   const [sellAmount, setSellAmount] = useState('');
   const [message, setMessage] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MarketItem | null>(null);
+
+  useEffect(() => {
+    const savedCredits = localStorage.getItem('userCredits');
+    if (savedCredits) {
+      setUserCredits(parseInt(savedCredits));
+    }
+  }, []);
 
   // Mock data for Thailand T-VER market
   const marketData = [
@@ -107,6 +114,7 @@ export default function Home() {
     setTransactions([...transactions, { type: 'ซื้อ', product: selectedProduct.project, amount, cost, date: new Date().toLocaleString('th-TH') }]);
     setBuyAmount('');
     setMessage(`ซื้อ ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
+    localStorage.setItem('userCredits', (userCredits + amount).toString());
     setTimeout(() => setMessage(''), 3000);
   };
 
@@ -130,6 +138,7 @@ export default function Home() {
     setTransactions([...transactions, { type: 'ขาย', product: selectedProduct.project, amount, revenue, date: new Date().toLocaleString('th-TH') }]);
     setSellAmount('');
     setMessage(`ขาย ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
+    localStorage.setItem('userCredits', (userCredits - amount).toString());
     setTimeout(() => setMessage(''), 3000);
   };
 
