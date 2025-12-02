@@ -149,7 +149,7 @@ export default function GamePage() {
           <ul className="list-disc list-inside space-y-2 text-gray-700">
             <li>หมุนวงล้อเพื่อลุ้นรับเครดิตคาร์บอน</li>
             <li>รางวัลต่างๆ: 100, 500, หรือ 1000 tCO2e</li>
-            <li>หากได้ "ลองใหม่" สามารถหมุนได้อีกครั้ง</li>
+            <li>หากได้ &quot;ลองใหม่&quot; สามารถหมุนได้อีกครั้ง</li>
             <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
           </ul>
         </div>
