@@ -33,9 +33,10 @@ export default function GamePage() {
       }
     }
 
-    // Calculate rotation (random + full rotations)
+    // Calculate rotation (random full rotations + exact segment center)
     const rotations = 5 + Math.random() * 5; // 5-10 full rotations
-    const angle = (360 / prizes.length) * prizes.indexOf(selectedPrize) + (360 / prizes.length) * Math.random();
+    const segmentAngle = 360 / prizes.length;
+    const angle = segmentAngle * prizes.indexOf(selectedPrize) + segmentAngle / 2;
 
     const wheel = document.getElementById('wheel');
     if (wheel) {
