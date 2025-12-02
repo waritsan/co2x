@@ -334,7 +334,7 @@ export default function Home() {
                     <td className="px-4 py-2 text-sm">{tx.type}</td>
                     <td className="px-4 py-2 text-sm">{tx.product}</td>
                     <td className="px-4 py-2 text-sm">{tx.amount} tCO2e</td>
-                    <td className="px-4 py-2 text-sm">฿{(tx.cost || tx.revenue).toLocaleString()}</td>
+                    <td className="px-4 py-2 text-sm">฿{(tx.cost ?? tx.revenue ?? 0).toLocaleString()}</td>
                     <td className="px-4 py-2 text-sm">{tx.date}</td>
                   </tr>
                 ))}
@@ -408,7 +408,7 @@ export default function Home() {
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold">
-                {selectedItem.project || selectedItem.name}
+                {'project' in selectedItem ? selectedItem.project : selectedItem.name}
               </h3>
               <button
                 onClick={() => setShowDetailsModal(false)}
@@ -418,7 +418,7 @@ export default function Home() {
               </button>
             </div>
             <div className="space-y-2">
-              {selectedItem.project ? (
+              {'project' in selectedItem ? (
                 <>
                   <p><strong>ประเภท:</strong> {selectedItem.type}</p>
                   <p><strong>ราคา:</strong> ฿{selectedItem.price}/tCO2e</p>
@@ -430,7 +430,7 @@ export default function Home() {
               ) : (
                 <>
                   <p><strong>สถานที่:</strong> {selectedItem.location}</p>
-                  {selectedItem.credits ? (
+                  {'credits' in selectedItem ? (
                     <p><strong>เครดิตที่มี:</strong> {selectedItem.credits} tCO2e</p>
                   ) : (
                     <p><strong>ความต้องการ:</strong> {selectedItem.demand} tCO2e</p>
