@@ -64,11 +64,11 @@ export default function GamePage() {
           <div className="flex justify-between items-center py-4">
             <h1 className="text-2xl font-bold text-green-600">WinFor.Earth: A Green Lottery Platform</h1>
             <nav className="flex items-center space-x-12">
-              <Link href="/" className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group">
+              <Link href="/" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
                 หน้าแรก
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
-              <Link href="/game" className="text-green-600 font-medium transition-colors duration-200 relative">
+              <Link href="/game" className="px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md">
                 เกมลอตเตอรี่
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
