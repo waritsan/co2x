@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const prizes = [
+type Prize = {
+  label: string;
+  color: string;
+  rarity: string;
+  probability: number;
+};
+
+const prizes: Prize[] = [
   { label: '100 tCO2e', color: '#10B981', rarity: 'Common', probability: 0.4 },
   { label: '500 tCO2e', color: '#059669', rarity: 'Uncommon', probability: 0.3 },
   { label: '1000 tCO2e', color: '#047857', rarity: 'Rare', probability: 0.2 },
@@ -19,7 +26,7 @@ export default function GamePage() {
   const [showSparkles, setShowSparkles] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
-  const [availablePrizes, setAvailablePrizes] = useState<any[]>([]);
+  const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [screenFlash, setScreenFlash] = useState(false);
   const [cardsVisible, setCardsVisible] = useState(false);
 
@@ -40,7 +47,7 @@ export default function GamePage() {
     console.log('Selected card:', index);
 
     // Generate prizes when card is selected
-    const selectedPrizes = [];
+    const selectedPrizes: Prize[] = [];
     for (let i = 0; i < 3; i++) {
       const random = Math.random();
       let cumulativeProbability = 0;
