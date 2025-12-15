@@ -28,11 +28,10 @@ export default function GamePage() {
   const openCard = () => {
     if (isPulling) return;
 
+    console.log('Starting card animation');
     setIsPulling(true);
     setResult(null);
     setCardFlipped(false);
-    setShowSparkles(false);
-    setIsShaking(false);
 
     // Select random prize based on probability
     const random = Math.random();
@@ -47,39 +46,27 @@ export default function GamePage() {
       }
     }
 
-    // Dramatic animation sequence
-    setTimeout(() => {
-      // Stage 1: Screen shake and card pulse
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
-    }, 200);
+    console.log('Selected prize:', selectedPrize.label);
 
+    // Simple flip animation
     setTimeout(() => {
-      // Stage 2: Card flip with scaling
+      console.log('Flipping card');
       setCardFlipped(true);
       setResult(selectedPrize.label);
-    }, 800);
 
-    setTimeout(() => {
-      // Stage 3: Sparkle effects
-      setShowSparkles(true);
-    }, 1400);
-
-    setTimeout(() => {
-      // Stage 4: Update credits
+      // Update credits
       const amount = parseInt(selectedPrize.label.split(' ')[0]);
       setUserCredits(prev => {
         const newCredits = prev + amount;
         localStorage.setItem('userCredits', newCredits.toString());
         return newCredits;
       });
-    }, 1800);
+    }, 500);
 
     setTimeout(() => {
-      // Stage 5: End animation
+      console.log('Ending animation');
       setIsPulling(false);
-      setShowSparkles(false);
-    }, 3500);
+    }, 2000);
   };
 
   return (
@@ -131,7 +118,7 @@ export default function GamePage() {
                     {/* Card back */}
                     <div
                       className={`card-reveal card-back w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center ${
-                        cardFlipped ? 'flipped animating' : ''
+                        cardFlipped ? 'flipped' : ''
                       }`}
                     >
                       <div className="text-white text-center">
@@ -143,28 +130,17 @@ export default function GamePage() {
 
                     {/* Card front (revealed prize) */}
                     <div
-                      className={`card-reveal card-front w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center dramatic-reveal ${
+                      className={`card-reveal card-front w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center ${
                         cardFlipped ? 'flipped' : ''
                       }`}
                     >
                       {result && (
-                        <div className="text-center relative">
+                        <div className="text-center">
                           <div className="text-3xl mb-2">🎉</div>
                           <div className="font-bold text-xl text-green-600">{result}</div>
                           <div className="text-sm text-gray-600 mt-2">
                             {prizes.find(p => p.label === result)?.rarity}
                           </div>
-
-                          {/* Sparkle effects */}
-                          {showSparkles && (
-                            <>
-                              <div className="sparkle"></div>
-                              <div className="sparkle"></div>
-                              <div className="sparkle"></div>
-                              <div className="sparkle"></div>
-                              <div className="sparkle"></div>
-                            </>
-                          )}
                         </div>
                       )}
                     </div>
