@@ -23,7 +23,7 @@ export default function GamePage() {
     }
   }, []);
 
-  const pullGacha = () => {
+  const openCard = () => {
     if (isPulling) return;
 
     setIsPulling(true);
@@ -92,17 +92,17 @@ export default function GamePage() {
           <p className="text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
         </div>
 
-        {/* Gacha System */}
+        {/* Card Reveal System */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-6 text-center">ระบบกาชาสีเขียว</h2>
+          <h2 className="text-xl font-semibold mb-6 text-center">ระบบเปิดการ์ดสีเขียว</h2>
 
           <div className="flex flex-col items-center">
-            {/* Gacha Machine */}
+            {/* Card Machine */}
             <div className="relative mb-8">
               <div className="w-80 h-96 bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg border-4 border-gray-600 relative overflow-hidden">
                 {/* Machine top */}
                 <div className="h-16 bg-gray-700 border-b-2 border-gray-600 flex items-center justify-center">
-                  <div className="text-white font-bold text-lg">🌱 GREEN GACHA 🌱</div>
+                  <div className="text-white font-bold text-lg">🌱 GREEN LOTTERY 🌱</div>
                 </div>
 
                 {/* Card slot */}
@@ -110,20 +110,20 @@ export default function GamePage() {
                   <div className="relative">
                     {/* Card back */}
                     <div
-                      className={`gacha-card w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center transition-transform duration-1000 ${
+                      className={`card-reveal w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center transition-transform duration-1000 ${
                         cardFlipped ? 'flipped' : ''
                       }`}
                     >
                       <div className="text-white text-center">
                         <div className="text-4xl mb-2">🎁</div>
-                        <div className="font-bold text-lg">กาชา</div>
+                        <div className="font-bold text-lg">การ์ด</div>
                         <div className="text-sm">คลิกเพื่อเปิด</div>
                       </div>
                     </div>
 
                     {/* Card front (revealed prize) */}
                     <div
-                      className={`gacha-card absolute inset-0 w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center transition-transform duration-1000 ${
+                      className={`card-reveal absolute inset-0 w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center transition-transform duration-1000 ${
                         cardFlipped ? '' : 'flipped'
                       }`}
                     >
@@ -149,11 +149,11 @@ export default function GamePage() {
 
             {/* Pull Button */}
             <button
-              onClick={pullGacha}
+              onClick={openCard}
               disabled={isPulling}
               className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
             >
-              {isPulling ? 'กำลังเปิด...' : 'ดึงกาชา'}
+              {isPulling ? 'กำลังเปิด...' : 'เปิดการ์ด'}
             </button>
 
             {/* Result */}
@@ -172,9 +172,9 @@ export default function GamePage() {
 
         {/* Rules */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">กฎของระบบกาชา</h2>
+          <h2 className="text-xl font-semibold mb-4">กฎของเกม</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700">
-            <li>ดึงการ์ดกาชาเพื่อลุ้นรับเครดิตคาร์บอน</li>
+            <li>เปิดการ์ดเพื่อลุ้นรับเครดิตคาร์บอน</li>
             <li>ระดับความหายาก: Common (100 tCO2e), Uncommon (500 tCO2e), Rare (1000 tCO2e), Legendary (2000 tCO2e)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
