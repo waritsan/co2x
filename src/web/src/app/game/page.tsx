@@ -114,11 +114,11 @@ export default function GamePage() {
 
                 {/* Card slot */}
                 <div className={`flex items-center justify-center h-64 bg-gradient-to-b from-gray-100 to-gray-200 transition-all duration-300 ${isShaking ? 'shake' : ''}`}>
-                  <div className="relative w-48 h-64" style={{ perspective: '1000px' }}>
+                  <div className="card-container" style={{ perspective: '1000px' }}>
                     {/* Card back */}
                     <div
-                      className={`card-reveal card-back w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center ${
-                        cardFlipped ? 'flipped' : ''
+                      className={`card-simple w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center ${
+                        cardFlipped ? 'hidden' : 'visible'
                       }`}
                     >
                       <div className="text-white text-center">
@@ -130,8 +130,8 @@ export default function GamePage() {
 
                     {/* Card front (revealed prize) */}
                     <div
-                      className={`card-reveal card-front w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center ${
-                        cardFlipped ? 'flipped' : ''
+                      className={`card-simple w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center ${
+                        cardFlipped ? 'visible' : 'hidden'
                       }`}
                     >
                       {result && (
