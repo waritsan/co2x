@@ -24,3 +24,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Gacha card flip animation */
+.gacha-card {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.gacha-card.flipped {
+  transform: rotateY(180deg);
+}

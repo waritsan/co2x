@@ -4,16 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const prizes = [
-  { label: '100 tCO2e', color: '#10B981', probability: 0.4 },
-  { label: '500 tCO2e', color: '#059669', probability: 0.3 },
-  { label: '1000 tCO2e', color: '#047857', probability: 0.2 },
-  { label: '2000 tCO2e', color: '#DC2626', probability: 0.1 },
+  { label: '100 tCO2e', color: '#10B981', rarity: 'Common', probability: 0.4 },
+  { label: '500 tCO2e', color: '#059669', rarity: 'Uncommon', probability: 0.3 },
+  { label: '1000 tCO2e', color: '#047857', rarity: 'Rare', probability: 0.2 },
+  { label: '2000 tCO2e', color: '#DC2626', rarity: 'Legendary', probability: 0.1 },
 ];
 
 export default function GamePage() {
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [isPulling, setIsPulling] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [userCredits, setUserCredits] = useState(1250);
+  const [cardFlipped, setCardFlipped] = useState(false);
 
   useEffect(() => {
     const savedCredits = localStorage.getItem('userCredits');
@@ -22,11 +23,12 @@ export default function GamePage() {
     }
   }, []);
 
-  const spinWheel = () => {
-    if (isSpinning) return;
+  const pullGacha = () => {
+    if (isPulling) return;
 
-    setIsSpinning(true);
+    setIsPulling(true);
     setResult(null);
+    setCardFlipped(false);
 
     // Select random prize based on probability
     const random = Math.random();
@@ -41,18 +43,9 @@ export default function GamePage() {
       }
     }
 
-    // Calculate rotation (random full rotations + exact segment center)
-    const rotations = 5 + Math.random() * 5; // 5-10 full rotations
-    const segmentAngle = 360 / prizes.length;
-    const angle = segmentAngle * prizes.indexOf(selectedPrize) + segmentAngle / 2;
-
-    const wheel = document.getElementById('wheel');
-    if (wheel) {
-      wheel.style.transform = `rotate(${rotations * 360 + angle}deg)`;
-    }
-
+    // Animate card flip after a short delay
     setTimeout(() => {
-      setIsSpinning(false);
+      setCardFlipped(true);
       setResult(selectedPrize.label);
 
       // Update credits
@@ -62,6 +55,10 @@ export default function GamePage() {
         localStorage.setItem('userCredits', newCredits.toString());
         return newCredits;
       });
+    }, 1500);
+
+    setTimeout(() => {
+      setIsPulling(false);
     }, 3000);
   };
 
@@ -95,66 +92,75 @@ export default function GamePage() {
           <p className="text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
         </div>
 
-        {/* Lottery Wheel */}
+        {/* Gacha System */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-6 text-center">วงล้อลอตเตอรี่สีเขียว</h2>
+          <h2 className="text-xl font-semibold mb-6 text-center">ระบบกาชาสีเขียว</h2>
 
           <div className="flex flex-col items-center">
+            {/* Gacha Machine */}
             <div className="relative mb-8">
-              {/* Pointer */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-red-600"></div>
-              </div>
+              <div className="w-80 h-96 bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg border-4 border-gray-600 relative overflow-hidden">
+                {/* Machine top */}
+                <div className="h-16 bg-gray-700 border-b-2 border-gray-600 flex items-center justify-center">
+                  <div className="text-white font-bold text-lg">🌱 GREEN GACHA 🌱</div>
+                </div>
 
-              {/* Wheel */}
-              <div
-                id="wheel"
-                className="w-80 h-80 rounded-full border-8 border-gray-300 relative overflow-hidden transition-transform duration-3000 ease-out"
-                style={{
-                  background: `conic-gradient(${prizes.map((prize, index) =>
-                    `${prize.color} ${index * (360 / prizes.length)}deg ${(index + 1) * (360 / prizes.length)}deg`
-                  ).join(', ')})`,
-                }}
-              >
-                {prizes.map((prize, index) => {
-                  const angle = (360 / prizes.length) * index + (360 / prizes.length) / 2;
-                  const radian = (angle * Math.PI) / 180;
-                  const radius = 120; // distance from center
-                  const x = Math.cos(radian) * radius;
-                  const y = Math.sin(radian) * radius;
-
-                  return (
+                {/* Card slot */}
+                <div className="flex items-center justify-center h-64 bg-gradient-to-b from-gray-100 to-gray-200">
+                  <div className="relative">
+                    {/* Card back */}
                     <div
-                      key={index}
-                      className="absolute text-white font-bold text-lg"
-                      style={{
-                        left: '50%',
-                        top: '50%',
-                        transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
-                        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                      }}
+                      className={`gacha-card w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center transition-transform duration-1000 ${
+                        cardFlipped ? 'flipped' : ''
+                      }`}
                     >
-                      {prize.label}
+                      <div className="text-white text-center">
+                        <div className="text-4xl mb-2">🎁</div>
+                        <div className="font-bold text-lg">กาชา</div>
+                        <div className="text-sm">คลิกเพื่อเปิด</div>
+                      </div>
                     </div>
-                  );
-                })}
+
+                    {/* Card front (revealed prize) */}
+                    <div
+                      className={`gacha-card absolute inset-0 w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center transition-transform duration-1000 ${
+                        cardFlipped ? '' : 'flipped'
+                      }`}
+                    >
+                      {result && (
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">🎉</div>
+                          <div className="font-bold text-xl text-green-600">{result}</div>
+                          <div className="text-sm text-gray-600 mt-2">
+                            {prizes.find(p => p.label === result)?.rarity}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Machine bottom */}
+                <div className="h-16 bg-gray-700 border-t-2 border-gray-600 flex items-center justify-center">
+                  <div className="text-yellow-400 text-sm">✨ Limited Time Event ✨</div>
+                </div>
               </div>
             </div>
 
-            {/* Spin Button */}
+            {/* Pull Button */}
             <button
-              onClick={spinWheel}
-              disabled={isSpinning}
-              className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              onClick={pullGacha}
+              disabled={isPulling}
+              className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
             >
-              {isSpinning ? 'กำลังหมุน...' : 'หมุนวงล้อ'}
+              {isPulling ? 'กำลังเปิด...' : 'ดึงกาชา'}
             </button>
 
             {/* Result */}
-            {result && (
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg text-center">
+            {result && cardFlipped && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg text-center border-2 border-blue-200">
                 <p className="text-lg font-semibold text-blue-800">
-                  คุณได้: {result}
+                  คุณได้รับ: {result}
                 </p>
                 <p className="text-sm text-blue-600 mt-2">
                   เครดิตถูกเพิ่มเข้าบัญชีแล้ว!
@@ -166,10 +172,11 @@ export default function GamePage() {
 
         {/* Rules */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">กฎของเกม</h2>
+          <h2 className="text-xl font-semibold mb-4">กฎของระบบกาชา</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700">
-            <li>หมุนวงล้อเพื่อลุ้นรับเครดิตคาร์บอน</li>
-            <li>รางวัลต่างๆ: 100, 500, 1000, หรือ 2000 tCO2e</li>
+            <li>ดึงการ์ดกาชาเพื่อลุ้นรับเครดิตคาร์บอน</li>
+            <li>ระดับความหายาก: Common (100 tCO2e), Uncommon (500 tCO2e), Rare (1000 tCO2e), Legendary (2000 tCO2e)</li>
+            <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
           </ul>
         </div>
