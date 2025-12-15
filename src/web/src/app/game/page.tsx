@@ -15,6 +15,8 @@ export default function GamePage() {
   const [result, setResult] = useState<string | null>(null);
   const [userCredits, setUserCredits] = useState(1250);
   const [cardFlipped, setCardFlipped] = useState(false);
+  const [showSparkles, setShowSparkles] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
 
   useEffect(() => {
     const savedCredits = localStorage.getItem('userCredits');
@@ -29,6 +31,8 @@ export default function GamePage() {
     setIsPulling(true);
     setResult(null);
     setCardFlipped(false);
+    setShowSparkles(false);
+    setIsShaking(false);
 
     // Select random prize based on probability
     const random = Math.random();
@@ -43,23 +47,39 @@ export default function GamePage() {
       }
     }
 
-    // Animate card flip after a short delay
+    // Dramatic animation sequence
     setTimeout(() => {
+      // Stage 1: Screen shake and card pulse
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+    }, 200);
+
+    setTimeout(() => {
+      // Stage 2: Card flip with scaling
       setCardFlipped(true);
       setResult(selectedPrize.label);
+    }, 800);
 
-      // Update credits
+    setTimeout(() => {
+      // Stage 3: Sparkle effects
+      setShowSparkles(true);
+    }, 1400);
+
+    setTimeout(() => {
+      // Stage 4: Update credits
       const amount = parseInt(selectedPrize.label.split(' ')[0]);
       setUserCredits(prev => {
         const newCredits = prev + amount;
         localStorage.setItem('userCredits', newCredits.toString());
         return newCredits;
       });
-    }, 1500);
+    }, 1800);
 
     setTimeout(() => {
+      // Stage 5: End animation
       setIsPulling(false);
-    }, 3000);
+      setShowSparkles(false);
+    }, 3500);
   };
 
   return (
@@ -106,12 +126,12 @@ export default function GamePage() {
                 </div>
 
                 {/* Card slot */}
-                <div className="flex items-center justify-center h-64 bg-gradient-to-b from-gray-100 to-gray-200">
+                <div className={`flex items-center justify-center h-64 bg-gradient-to-b from-gray-100 to-gray-200 transition-all duration-300 ${isShaking ? 'shake' : ''}`}>
                   <div className="relative">
                     {/* Card back */}
                     <div
-                      className={`card-reveal w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center transition-transform duration-1000 ${
-                        cardFlipped ? 'flipped' : ''
+                      className={`card-reveal w-48 h-64 bg-gradient-to-br from-green-400 to-green-600 rounded-lg border-4 border-green-300 shadow-lg flex items-center justify-center ${
+                        cardFlipped ? 'flipped animating' : ''
                       }`}
                     >
                       <div className="text-white text-center">
@@ -123,17 +143,28 @@ export default function GamePage() {
 
                     {/* Card front (revealed prize) */}
                     <div
-                      className={`card-reveal absolute inset-0 w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center transition-transform duration-1000 ${
+                      className={`card-reveal absolute inset-0 w-48 h-64 bg-white rounded-lg border-4 border-yellow-400 shadow-xl flex flex-col items-center justify-center dramatic-reveal ${
                         cardFlipped ? '' : 'flipped'
                       }`}
                     >
                       {result && (
-                        <div className="text-center">
+                        <div className="text-center relative">
                           <div className="text-3xl mb-2">🎉</div>
                           <div className="font-bold text-xl text-green-600">{result}</div>
                           <div className="text-sm text-gray-600 mt-2">
                             {prizes.find(p => p.label === result)?.rarity}
                           </div>
+
+                          {/* Sparkle effects */}
+                          {showSparkles && (
+                            <>
+                              <div className="sparkle"></div>
+                              <div className="sparkle"></div>
+                              <div className="sparkle"></div>
+                              <div className="sparkle"></div>
+                              <div className="sparkle"></div>
+                            </>
+                          )}
                         </div>
                       )}
                     </div>
