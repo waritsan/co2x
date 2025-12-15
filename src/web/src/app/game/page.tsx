@@ -20,6 +20,7 @@ export default function GamePage() {
   const [isShaking, setIsShaking] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [availablePrizes, setAvailablePrizes] = useState<any[]>([]);
+  const [screenFlash, setScreenFlash] = useState(false);
   const [cardsVisible, setCardsVisible] = useState(false);
 
   useEffect(() => {
@@ -61,6 +62,13 @@ export default function GamePage() {
     // Dramatic reveal timing for selected card
     setTimeout(() => {
       console.log('Flipping selected card');
+      setScreenFlash(true); // Add screen flash effect
+      
+      // Reset screen flash after animation completes
+      setTimeout(() => {
+        setScreenFlash(false);
+      }, 200);
+      
       const newCardFlipped = [...cardFlipped];
       newCardFlipped[index] = true;
       setCardFlipped(newCardFlipped);
@@ -96,7 +104,28 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* Screen Flash Effect */}
+      {screenFlash && (
+        <>
+          <div className="fixed inset-0 bg-white z-50 pointer-events-none screen-flash"></div>
+          {/* Floating sparkles */}
+          <div className="fixed inset-0 z-40 pointer-events-none">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-400 rounded-full sparkle"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 0.5}s`,
+                }}
+              ></div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -167,6 +196,11 @@ export default function GamePage() {
                           availablePrizes[index]?.rarity === 'Rare' ? 'rare-card' : 
                           availablePrizes[index]?.rarity === 'Uncommon' ? 'uncommon-card' : 'common-card'}`}
                     >
+                      {/* Radial light burst effect */}
+                      {cardFlipped[index] && (
+                        <div className="absolute inset-0 radial-burst"></div>
+                      )}
+
                       {/* Rarity border effect */}
                       <div className="absolute inset-0 border-2 rounded-lg opacity-50"
                            style={{borderColor: availablePrizes[index]?.color || '#10B981'}}></div>
