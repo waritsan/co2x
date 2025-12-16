@@ -51,6 +51,7 @@ export default function Home() {
   const [sellAmount, setSellAmount] = useState('');
   const [message, setMessage] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MarketItem | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const savedCredits = localStorage.getItem('userCredits');
@@ -58,6 +59,23 @@ export default function Home() {
       setUserCredits(parseInt(savedCredits));
     }
   }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen && !(event.target as Element).closest('header')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   // Mock data for Thailand T-VER market
   const marketData = [
@@ -145,23 +163,65 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-green-600 text-center sm:text-left">WinFor.Earth</h1>
-            <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 lg:space-x-12">
-              <Link href="/" className="px-3 sm:px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md text-sm sm:text-base">
+          <div className="flex justify-between items-center py-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-green-600">WinFor.Earth</h1>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden sm:flex items-center space-x-6 lg:space-x-12">
+              <Link href="/" className="px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md">
                 หน้าแรก
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
-              <Link href="/game" className="px-3 sm:px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50 text-sm sm:text-base">
+              <Link href="/game" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
                 เกมลอตเตอรี่
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
-              <div className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 sm:px-3 py-1 rounded-full">แอปเดโม</div>
+              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</div>
             </nav>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="sm:hidden p-2 rounded-md text-gray-700 hover:text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500"
+              aria-label="Toggle menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMenuOpen && (
+          <div className="sm:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50">
+            <nav className="px-4 py-4 space-y-2">
+              <Link
+                href="/"
+                className="block px-4 py-3 text-green-600 hover:bg-green-50 rounded-md font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                หน้าแรก
+              </Link>
+              <Link
+                href="/game"
+                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                เกมลอตเตอรี่
+              </Link>
+              <div className="px-4 py-2">
+                <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</span>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Compliance Notice */}
