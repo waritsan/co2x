@@ -113,6 +113,68 @@ body {
   transition: transform 0.3s ease-in, opacity 0.3s ease-in;
 }
 
+/* Portrait mode card stacking */
+@media (orientation: portrait) {
+  .portrait-h-64 {
+    height: 16rem;
+  }
+  
+  .portrait-w-48 {
+    width: 12rem;
+  }
+  
+  .portrait-translate-x-2 {
+    transform: translateX(0.5rem);
+  }
+  
+  .portrait--translate-y-2 {
+    transform: translateY(-0.5rem);
+  }
+  
+  .portrait-translate-x-4 {
+    transform: translateX(1rem);
+  }
+  
+  .portrait--translate-y-4 {
+    transform: translateY(-1rem);
+  }
+  
+  .portrait-transition-transform {
+    transition: transform 0.3s ease;
+  }
+  
+  .portrait-duration-300 {
+    transition-duration: 300ms;
+  }
+  
+  .portrait-shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+  .landscape-flex-col {
+    flex-direction: column;
+  }
+  
+  .landscape-sm-flex-row {
+    flex-direction: row;
+  }
+  
+  .landscape-gap-4 {
+    gap: 1rem;
+  }
+  
+  .landscape-sm-gap-8 {
+    gap: 2rem;
+  }
+  
+  .landscape-lg-gap-12 {
+    gap: 3rem;
+  }
+}
+
 /* Enhanced card animation - Safari compatible */
 .card-simple {
   position: absolute;

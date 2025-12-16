@@ -289,14 +289,26 @@ export default function GamePage() {
 
           <div className="flex flex-col items-center">
             {/* Three Cards Display */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 lg:gap-12 mb-8 relative">
+            <div className="relative flex justify-center items-center mb-8 portrait-h-64 portrait-w-48 landscape-flex-col landscape-sm-flex-row landscape-gap-4 landscape-sm-gap-8 landscape-lg-gap-12">
               {cardsVisible && [0, 1, 2].map((index) => (
-                <div key={index} className="relative mb-4 sm:mb-0" style={{ perspective: '1000px', width: '140px', height: '196px' }}>
+                <div
+                  key={index}
+                  className={`absolute inset-0 portrait-transition-transform portrait-duration-300 ${
+                    index === 0 ? 'z-10' :
+                    index === 1 ? 'z-20 portrait-translate-x-2 portrait--translate-y-2' :
+                    'z-30 portrait-translate-x-4 portrait--translate-y-4'
+                  }`}
+                  style={{
+                    perspective: '1000px',
+                    width: '140px',
+                    height: '196px'
+                  }}
+                >
                   {/* Card back */}
                   <div
                     className={`card-simple w-35 h-49 sm:w-40 sm:h-56 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-4 border-yellow-300 flex items-center justify-center relative overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 ${
                       cardFlipped[index] ? 'hidden' : 'visible'
-                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${!hasToken ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${!hasToken ? 'opacity-50 cursor-not-allowed' : ''} portrait-shadow-2xl`}
                     onClick={() => selectedCard === null && hasToken && selectCard(index)}
                   >
                     {/* Ornate border pattern */}
@@ -320,7 +332,7 @@ export default function GamePage() {
                   {/* Card front (revealed prize) */}
                   {cardsVisible && (
                     <div
-                      className={`card-simple w-40 h-56 bg-gradient-to-br from-white via-gray-50 to-gray-100 border-4 flex flex-col items-center justify-center prize-glow relative overflow-hidden ${
+                      className={`card-simple absolute inset-0 w-35 h-49 sm:w-40 sm:h-56 bg-gradient-to-br from-white via-gray-50 to-gray-100 border-4 flex flex-col items-center justify-center prize-glow relative overflow-hidden portrait-shadow-2xl ${
                         cardFlipped[index] ? 'visible' : 'hidden'
                       } ${availablePrizes[index]?.rarity === 'Legendary' ? 'legendary-card' : 
                           availablePrizes[index]?.rarity === 'Rare' ? 'rare-card' : 
