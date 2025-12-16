@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 type Prize = {
   label: string;
@@ -29,6 +30,9 @@ export default function GamePage() {
   const [availablePrizes, setAvailablePrizes] = useState<Prize[]>([]);
   const [screenFlash, setScreenFlash] = useState(false);
   const [cardsVisible, setCardsVisible] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanner, setScanner] = useState<Html5QrcodeScanner | null>(null);
 
   useEffect(() => {
     const savedCredits = localStorage.getItem('userCredits');
@@ -37,10 +41,44 @@ export default function GamePage() {
     }
     // Show cards by default
     setCardsVisible(true);
+
+    // Check for token in URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token === 'gacha2025') { // Simple token validation
+      setHasToken(true);
+      // Clean up URL by removing the token parameter
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
   }, []);
 
+  useEffect(() => {
+    if (showScanner) {
+      const qrScanner = new Html5QrcodeScanner(
+        "qr-reader",
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        false
+      );
+      setScanner(qrScanner);
+
+      qrScanner.render((decodedText: string) => {
+        console.log('Scanned:', decodedText);
+        // Assume any scanned QR is a valid token
+        setHasToken(true);
+        setShowScanner(false);
+        qrScanner.clear();
+      }, (errorMessage: string) => {
+        console.log('QR scan error:', errorMessage);
+      });
+    } else if (scanner) {
+      scanner.clear();
+      setScanner(null);
+    }
+  }, [showScanner]);
+
   const selectCard = (index: number) => {
-    if (selectedCard !== null || isPulling) return;
+    if (selectedCard !== null || isPulling || !hasToken) return;
 
     setIsPulling(true);
     setSelectedCard(index);
@@ -107,6 +145,7 @@ export default function GamePage() {
       console.log('Ending animation');
       setIsPulling(false);
       setShowParticles([false, false, false]);
+      setHasToken(false); // Reset token after pull
     }, 4000);
   };
 
@@ -161,6 +200,30 @@ export default function GamePage() {
           <p className="text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
         </div>
 
+        {/* QR Scanner */}
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h2 className="text-xl font-semibold mb-4">สแกน QR เพื่อรับโทเค็น</h2>
+          {!hasToken ? (
+            <button
+              onClick={() => setShowScanner(true)}
+              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              สแกน QR Code
+            </button>
+          ) : (
+            <p className="text-green-600 font-semibold">คุณมีโทเค็นแล้ว! เลือกการ์ดเพื่อเปิดกล่อง</p>
+          )}
+          <div id="qr-reader" className="mt-4" style={{ display: showScanner ? 'block' : 'none' }}></div>
+          {showScanner && (
+            <button
+              onClick={() => setShowScanner(false)}
+              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              ยกเลิก
+            </button>
+          )}
+        </div>
+
         {/* Card Reveal System */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
 
@@ -173,8 +236,8 @@ export default function GamePage() {
                   <div
                     className={`card-simple w-40 h-56 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-4 border-yellow-300 flex items-center justify-center relative overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 ${
                       cardFlipped[index] ? 'hidden' : 'visible'
-                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''}`}
-                    onClick={() => selectedCard === null && selectCard(index)}
+                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${!hasToken ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={() => selectedCard === null && hasToken && selectCard(index)}
                   >
                     {/* Ornate border pattern */}
                     <div className="absolute inset-2 border-2 border-yellow-200 rounded-lg opacity-80"></div>
@@ -249,21 +312,6 @@ export default function GamePage() {
               ))}
             </div>
 
-            {/* Pull Button */}
-            <button
-              onClick={() => {
-                setResults([null, null, null]);
-                setCardFlipped([false, false, false]);
-                setShowParticles([false, false, false]);
-                setSelectedCard(null);
-                setIsPulling(false);
-                setAvailablePrizes([]);
-              }}
-              className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
-            >
-              เล่นใหม่
-            </button>
-
             {/* Result */}
             {selectedCard !== null && cardFlipped.some(flipped => flipped) && (
               <div className="mt-6 p-4 bg-blue-50 rounded-lg text-center border-2 border-blue-200">
@@ -286,7 +334,6 @@ export default function GamePage() {
             <li>ระดับความหายาก: Common (100 tCO2e), Uncommon (500 tCO2e), Rare (1000 tCO2e), Legendary (2000 tCO2e)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
-            <li>คลิก "เล่นใหม่" เพื่อเริ่มเกมรอบใหม่</li>
           </ul>
         </div>
       </main>
