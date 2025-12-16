@@ -147,18 +147,18 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-green-600">WinFor.Earth: A Green Lottery Platform</h1>
-            <nav className="flex items-center space-x-12">
-              <Link href="/" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-green-600 text-center sm:text-left">WinFor.Earth</h1>
+            <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 lg:space-x-12">
+              <Link href="/" className="px-3 sm:px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md text-sm sm:text-base">
                 หน้าแรก
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
-              <Link href="/game" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+              <Link href="/game" className="px-3 sm:px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50 text-sm sm:text-base">
                 เกมลอตเตอรี่
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
-              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</div>
+              <div className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 sm:px-3 py-1 rounded-full">แอปเดโม</div>
             </nav>
           </div>
         </div>
@@ -176,40 +176,40 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">ยอดคงเหลือคาร์บอน</h3>
-            <p className="text-3xl font-bold text-green-600 mt-2">{userCredits.toLocaleString()} tCO2e</p>
-            <p className="text-sm text-gray-500">เครดิตที่มีอยู่</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">ยอดคงเหลือคาร์บอน</h3>
+            <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-2">{userCredits.toLocaleString()} tCO2e</p>
+            <p className="text-xs sm:text-sm text-gray-500">เครดิตที่มีอยู่</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">มูลค่าพอร์ต</h3>
-            <p className="text-3xl font-bold text-blue-600 mt-2">฿{userBalance.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">+5.2% ในเดือนนี้</p>
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">มูลค่าพอร์ต</h3>
+            <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-2">฿{userBalance.toLocaleString()}</p>
+            <p className="text-xs sm:text-sm text-gray-500">+5.2% ในเดือนนี้</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">การซื้อขายที่ใช้งานอยู่</h3>
-            <p className="text-3xl font-bold text-purple-600 mt-2">{transactions.length}</p>
-            <p className="text-sm text-gray-500">รอการชำระ</p>
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow sm:col-span-2 lg:col-span-1">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">การซื้อขายที่ใช้งานอยู่</h3>
+            <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-2">{transactions.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500">รอการชำระ</p>
           </div>
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <input
               type="text"
               placeholder="ค้นหาโครงการ ผู้ขาย ผู้ซื้อ..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
             />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
             >
               <option value="all">ทุกประเภท</option>
               <option value="ป่าไม้">ป่าไม้</option>
@@ -220,10 +220,10 @@ export default function Home() {
         </div>
 
         {/* Trading Section */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">การซื้อขายด่วน</h2>
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">การซื้อขายด่วน</h2>
           {message && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-sm sm:text-base">
               {message}
             </div>
           )}
@@ -235,7 +235,7 @@ export default function Home() {
                 const product = marketData.find(p => p.id === parseInt(e.target.value)) || null;
                 setSelectedProduct(product);
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             >
               <option value="">เลือกผลิตภัณฑ์...</option>
               {marketData.map((product) => (
@@ -245,7 +245,7 @@ export default function Home() {
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">ซื้อเครดิต</label>
               <div className="flex gap-2">
@@ -254,12 +254,12 @@ export default function Home() {
                   placeholder="จำนวน (tCO2e)"
                   value={buyAmount}
                   onChange={(e) => setBuyAmount(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
                 />
                 <button
                   onClick={handleBuy}
                   disabled={!selectedProduct}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
+                  className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400 text-sm sm:text-base"
                 >
                   ซื้อ
                 </button>
@@ -273,12 +273,12 @@ export default function Home() {
                   placeholder="จำนวน (tCO2e)"
                   value={sellAmount}
                   onChange={(e) => setSellAmount(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
                 />
                 <button
                   onClick={handleSell}
                   disabled={!selectedProduct}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-gray-400"
+                  className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:bg-gray-400 text-sm sm:text-base"
                 >
                   ขาย
                 </button>
@@ -287,7 +287,7 @@ export default function Home() {
           </div>
           {selectedProduct && (
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
-              <p className="text-sm text-blue-800">
+              <p className="text-xs sm:text-sm text-blue-800">
                 <strong>ผลิตภัณฑ์ที่เลือก:</strong> {selectedProduct.project} (ราคา: ฿{selectedProduct.price}/tCO2e)
               </p>
             </div>

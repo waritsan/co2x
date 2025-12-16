@@ -175,49 +175,49 @@ export default function GamePage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-green-600">WinFor.Earth: A Green Lottery Platform</h1>
-            <nav className="flex items-center space-x-12">
-              <Link href="/" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-green-600 text-center sm:text-left">WinFor.Earth</h1>
+            <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 lg:space-x-12">
+              <Link href="/" className="px-3 sm:px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50 text-sm sm:text-base">
                 หน้าแรก
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
-              <Link href="/game" className="px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md">
+              <Link href="/game" className="px-3 sm:px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md text-sm sm:text-base">
                 เกมลอตเตอรี่
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
-              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</div>
+              <div className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 sm:px-3 py-1 rounded-full">แอปเดโม</div>
             </nav>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Credits Display */}
-        <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold mb-4">เครดิตของคุณ</h2>
-          <p className="text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">เครดิตของคุณ</h2>
+          <p className="text-2xl sm:text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
         </div>
 
         {/* QR Scanner */}
-        <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold mb-4">สแกน QR เพื่อรับโทเค็น</h2>
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">สแกน QR เพื่อรับโทเค็น</h2>
           {!hasToken ? (
             <button
               onClick={() => setShowScanner(true)}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
             >
               สแกน QR Code
             </button>
           ) : (
-            <p className="text-green-600 font-semibold">คุณมีโทเค็นแล้ว! เลือกการ์ดเพื่อเปิดกล่อง</p>
+            <p className="text-green-600 font-semibold text-center sm:text-left">คุณมีโทเค็นแล้ว! เลือกการ์ดเพื่อเปิดกล่อง</p>
           )}
-          <div id="qr-reader" className="mt-4" style={{ display: showScanner ? 'block' : 'none' }}></div>
+          <div id="qr-reader" className="mt-4 max-w-sm mx-auto" style={{ display: showScanner ? 'block' : 'none' }}></div>
           {showScanner && (
             <button
               onClick={() => setShowScanner(false)}
-              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="mt-4 w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 text-sm sm:text-base"
             >
               ยกเลิก
             </button>
@@ -225,16 +225,16 @@ export default function GamePage() {
         </div>
 
         {/* Card Reveal System */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
 
           <div className="flex flex-col items-center">
             {/* Three Cards Display */}
-            <div className="flex justify-center gap-12 mb-8 relative flex-nowrap">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 lg:gap-12 mb-8 relative">
               {cardsVisible && [0, 1, 2].map((index) => (
-                <div key={index} className="relative" style={{ perspective: '1000px', width: '160px', height: '224px' }}>
+                <div key={index} className="relative mb-4 sm:mb-0" style={{ perspective: '1000px', width: '140px', height: '196px' }}>
                   {/* Card back */}
                   <div
-                    className={`card-simple w-40 h-56 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-4 border-yellow-300 flex items-center justify-center relative overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 ${
+                    className={`card-simple w-35 h-49 sm:w-40 sm:h-56 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-4 border-yellow-300 flex items-center justify-center relative overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 ${
                       cardFlipped[index] ? 'hidden' : 'visible'
                     } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${!hasToken ? 'opacity-50 cursor-not-allowed' : ''}`}
                     onClick={() => selectedCard === null && hasToken && selectCard(index)}
@@ -327,9 +327,10 @@ export default function GamePage() {
         </div>
 
         {/* Rules */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">กฎของเกม</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">กฎของเกม</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm sm:text-base">
+            <li>สแกน QR เพื่อรับโทเค็นก่อนเล่น</li>
             <li>คลิกที่การ์ดใดก็ได้เพื่อเปิดดูรางวัล</li>
             <li>ระดับความหายาก: Common (100 tCO2e), Uncommon (500 tCO2e), Rare (1000 tCO2e), Legendary (2000 tCO2e)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
