@@ -206,6 +206,10 @@ export default function GamePage() {
                 เกมลอตเตอรี่
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
+              <Link href="/coffee" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+                ร้านกาแฟ
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
               <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</div>
             </nav>
 
@@ -243,6 +247,13 @@ export default function GamePage() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 เกมลอตเตอรี่
+              </Link>
+              <Link
+                href="/coffee"
+                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ร้านกาแฟ
               </Link>
               <div className="px-4 py-2">
                 <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">แอปเดโม</span>
