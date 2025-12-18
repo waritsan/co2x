@@ -23,6 +23,7 @@ export default function GamePage() {
   const [isPulling, setIsPulling] = useState(false);
   const [results, setResults] = useState<(string | null)[]>([null, null, null]);
   const [userCredits, setUserCredits] = useState(1250);
+  const [userBalance, setUserBalance] = useState(625000);
   const [cardFlipped, setCardFlipped] = useState([false, false, false]);
   const [showParticles, setShowParticles] = useState([false, false, false]);
   const [showSparkles, setShowSparkles] = useState(false);
@@ -41,6 +42,10 @@ export default function GamePage() {
     const savedCredits = localStorage.getItem('userCredits');
     if (savedCredits) {
       setUserCredits(parseInt(savedCredits));
+    }
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) {
+      setUserBalance(parseInt(savedBalance));
     }
     // Show cards by default
     setCardsVisible(true);
@@ -164,11 +169,11 @@ export default function GamePage() {
         setShowParticles(newShowParticles);
       }, 300);
 
-      // Update credits with the selected prize
-      setUserCredits(prev => {
-        const newCredits = prev + selectedPrize.value;
-        localStorage.setItem('userCredits', newCredits.toString());
-        return newCredits;
+      // Update balance with the winning prize (baht coupons)
+      setUserBalance(prev => {
+        const newBalance = prev + selectedPrize.value;
+        localStorage.setItem('userBalance', newBalance.toString());
+        return newBalance;
       });
     }, 800);
 
