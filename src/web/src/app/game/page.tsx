@@ -6,16 +6,17 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 
 type Prize = {
   label: string;
+  value: number;
   color: string;
   rarity: string;
   probability: number;
 };
 
 const prizes: Prize[] = [
-  { label: '100 tCO2e', color: '#10B981', rarity: 'Common', probability: 0.4 },
-  { label: '500 tCO2e', color: '#059669', rarity: 'Uncommon', probability: 0.3 },
-  { label: '1000 tCO2e', color: '#047857', rarity: 'Rare', probability: 0.2 },
-  { label: '2000 tCO2e', color: '#DC2626', rarity: 'Legendary', probability: 0.1 },
+  { label: '10 Baht Coupon', value: 10, color: '#10B981', rarity: 'Common', probability: 0.4 },
+  { label: '20 Baht Coupon', value: 20, color: '#059669', rarity: 'Uncommon', probability: 0.3 },
+  { label: '50 Baht Coupon', value: 50, color: '#047857', rarity: 'Rare', probability: 0.2 },
+  { label: '100 Baht Coupon', value: 100, color: '#DC2626', rarity: 'Legendary', probability: 0.1 },
 ];
 
 export default function GamePage() {
@@ -151,9 +152,8 @@ export default function GamePage() {
       }, 300);
 
       // Update credits with the selected prize
-      const amount = parseInt(selectedPrize.label.split(' ')[0]);
       setUserCredits(prev => {
-        const newCredits = prev + amount;
+        const newCredits = prev + selectedPrize.value;
         localStorage.setItem('userCredits', newCredits.toString());
         return newCredits;
       });
@@ -404,9 +404,9 @@ export default function GamePage() {
           <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm sm:text-base">
             <li>สแกน QR เพื่อรับโทเค็นก่อนเล่น</li>
             <li>คลิกที่การ์ดใดก็ได้เพื่อเปิดดูรางวัล</li>
-            <li>ระดับความหายาก: Common (100 tCO2e), Uncommon (500 tCO2e), Rare (1000 tCO2e), Legendary (2000 tCO2e)</li>
+            <li>ระดับความหายาก: Common (10 Baht), Uncommon (20 Baht), Rare (50 Baht), Legendary (100 Baht)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
-            <li>เครดิตที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
+            <li>คูปองที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
           </ul>
         </div>
       </main>
