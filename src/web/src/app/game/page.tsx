@@ -53,8 +53,23 @@ export default function GamePage() {
     // Check for token in URL parameters to add credits
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
-    if (token === 'gacha2025') { // Simple token validation
-      // Add 10kg CO2e credits when token is detected
+    if (token && token.startsWith('gacha:')) {
+      // Format: ?token=gacha:5 means 5kg CO2e
+      const amount = parseInt(token.substring(6));
+      if (!isNaN(amount) && amount > 0) {
+        setUserCredits(prev => {
+          const newCredits = prev + amount;
+          localStorage.setItem('userCredits', newCredits.toString());
+          return newCredits;
+        });
+        setMessage(`✅ Token detected! +${amount} kg CO₂e added to your account`);
+        setTimeout(() => setMessage(''), 3000);
+      }
+      // Clean up URL by removing the token parameter
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    } else if (token === 'gacha2025') {
+      // Legacy support: gacha2025 adds 10kg
       const creditAmount = 10;
       setUserCredits(prev => {
         const newCredits = prev + creditAmount;
@@ -80,8 +95,14 @@ export default function GamePage() {
 
       qrScanner.render((decodedText: string) => {
         console.log('Scanned:', decodedText);
-        // Add 10kg CO2e credits when QR is scanned
-        const creditAmount = 10;
+        // Parse QR code format: "gacha:5" means 5kg CO2e
+        let creditAmount = 10; // default
+        if (decodedText.startsWith('gacha:')) {
+          const amount = parseInt(decodedText.substring(6));
+          if (!isNaN(amount) && amount > 0) {
+            creditAmount = amount;
+          }
+        }
         setUserCredits(prev => {
           const newCredits = prev + creditAmount;
           localStorage.setItem('userCredits', newCredits.toString());
@@ -320,12 +341,13 @@ export default function GamePage() {
         {/* QR Scanner */}
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4">📱 สแกน QR เพื่อรับเครดิต</h2>
+          <p className="text-sm text-gray-600 mb-4">QR codes have different amounts (0.3kg - 10kg) just like coffee prices</p>
           {!showScanner ? (
             <button
               onClick={() => setShowScanner(true)}
               className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
             >
-              🔍 สแกน QR Code (+10 kg CO₂e)
+              🔍 สแกน QR Code
             </button>
           ) : (
             <button
@@ -466,7 +488,7 @@ export default function GamePage() {
             <li>ระดับความหายาก: Common (10 Baht), Uncommon (20 Baht), Rare (50 Baht), Legendary (100 Baht)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>คูปองที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
-            <li>สแกน QR Code เพื่อเพิ่ม 10kg CO₂e ต่อครั้ง</li>
+            <li><strong>สแกน QR Code</strong> - แต่ละ QR มีจำนวนต่างกัน เช่นเดียวกับราคากาแฟ (0.3kg - 10kg)</li>
             <li>ซื้อกาแฟจาก "ร้านกาแฟ" เพื่อรับเครดิต CO₂e เพิ่มเติม</li>
           </ul>
         </div>
