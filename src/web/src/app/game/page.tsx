@@ -35,6 +35,7 @@ export default function GamePage() {
   const [showScanner, setShowScanner] = useState(false);
   const [scanner, setScanner] = useState<Html5QrcodeScanner | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const savedCredits = localStorage.getItem('userCredits');
@@ -97,11 +98,23 @@ export default function GamePage() {
   }, [isMenuOpen]);
 
   const selectCard = (index: number) => {
-    if (selectedCard !== null || isPulling || !hasToken) return;
+    if (selectedCard !== null || isPulling) return;
+    
+    // Check if user has at least 1kg CO2e to play
+    if (userCredits < 1) {
+      setMessage('ต้องมี 1kg CO₂e ขึ้นไปเพื่อเล่น');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
 
     setIsPulling(true);
     setSelectedCard(index);
     console.log('Selected card:', index);
+    
+    // Deduct 1kg CO2e credit for playing
+    const newCredits = userCredits - 1;
+    setUserCredits(newCredits);
+    localStorage.setItem('userCredits', newCredits.toString());
 
     // Generate prizes when card is selected
     const selectedPrizes: Prize[] = [];
@@ -163,7 +176,6 @@ export default function GamePage() {
       console.log('Ending animation');
       setIsPulling(false);
       setShowParticles([false, false, false]);
-      setHasToken(false); // Reset token after pull
     }, 4000);
   };
 
@@ -271,32 +283,27 @@ export default function GamePage() {
           <p className="text-2xl sm:text-3xl font-bold text-green-600">{userCredits.toLocaleString()} tCO2e</p>
         </div>
 
-        {/* QR Scanner */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-8">
-          <h2 className="text-lg sm:text-xl font-semibold mb-4">สแกน QR เพื่อรับโทเค็น</h2>
-          {!hasToken ? (
-            <button
-              onClick={() => setShowScanner(true)}
-              className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
-            >
-              สแกน QR Code
-            </button>
-          ) : (
-            <p className="text-green-600 font-semibold text-center sm:text-left">คุณมีโทเค็นแล้ว! เลือกการ์ดเพื่อเปิดกล่อง</p>
-          )}
-          <div id="qr-reader" className="mt-4 max-w-sm mx-auto" style={{ display: showScanner ? 'block' : 'none' }}></div>
-          {showScanner && (
-            <button
-              onClick={() => setShowScanner(false)}
-              className="mt-4 w-full sm:w-auto px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 text-sm sm:text-base"
-            >
-              ยกเลิก
-            </button>
-          )}
+        {/* Game Cost Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4 text-blue-900">💰 ค่าเล่นเกม</h2>
+          <div className="space-y-3">
+            <p className="text-blue-800"><strong>ค่าเล่นต่อครั้ง:</strong> 1kg CO₂e</p>
+            <p className="text-blue-800"><strong>เครดิตปัจจุบัน:</strong> <span className="text-green-600 font-bold">{userCredits.toLocaleString()}</span> kg</p>
+            {userCredits < 1 ? (
+              <p className="text-red-600 font-semibold">❌ เครดิตไม่พอเล่นเกม ให้ซื้อกาแฟเพื่อรับเครดิตเพิ่มเติม</p>
+            ) : (
+              <p className="text-green-600 font-semibold">✅ คุณสามารถเล่นได้ {Math.floor(userCredits)} ครั้ง</p>
+            )}
+          </div>
         </div>
 
         {/* Card Reveal System */}
         <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+          {message && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm sm:text-base">
+              {message}
+            </div>
+          )}
 
           <div className="flex flex-col items-center">
             {/* Three Cards Display */}
@@ -319,8 +326,8 @@ export default function GamePage() {
                   <div
                     className={`card-simple w-35 h-49 sm:w-40 sm:h-56 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-4 border-yellow-300 flex items-center justify-center relative overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 ${
                       cardFlipped[index] ? 'hidden' : 'visible'
-                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${!hasToken ? 'opacity-50 cursor-not-allowed' : ''} portrait-shadow-2xl`}
-                    onClick={() => selectedCard === null && hasToken && selectCard(index)}
+                    } ${isPulling && selectedCard === null ? 'animate-pulse' : ''} ${userCredits < 1 ? 'opacity-40 cursor-not-allowed hover:scale-100' : ''} portrait-shadow-2xl`}
+                    onClick={() => selectedCard === null && selectCard(index)}
                   >
                     {/* Ornate border pattern */}
                     <div className="absolute inset-2 border-2 border-yellow-200 rounded-lg opacity-80"></div>
@@ -413,11 +420,12 @@ export default function GamePage() {
         <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <h2 className="text-lg sm:text-xl font-semibold mb-4">กฎของเกม</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm sm:text-base">
-            <li>สแกน QR เพื่อรับโทเค็นก่อนเล่น</li>
+            <li>ต้องมี 1kg CO₂e เพื่อเล่นเกมหนึ่งครั้ง</li>
             <li>คลิกที่การ์ดใดก็ได้เพื่อเปิดดูรางวัล</li>
             <li>ระดับความหายาก: Common (10 Baht), Uncommon (20 Baht), Rare (50 Baht), Legendary (100 Baht)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>คูปองที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
+            <li>ซื้อกาแฟจาก "ร้านกาแฟ" เพื่อรับเครดิต CO₂e เพิ่มเติม</li>
           </ul>
         </div>
       </main>
