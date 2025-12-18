@@ -50,11 +50,19 @@ export default function GamePage() {
     // Show cards by default
     setCardsVisible(true);
 
-    // Check for token in URL parameters
+    // Check for token in URL parameters to add credits
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     if (token === 'gacha2025') { // Simple token validation
-      setHasToken(true);
+      // Add 10kg CO2e credits when token is detected
+      const creditAmount = 10;
+      setUserCredits(prev => {
+        const newCredits = prev + creditAmount;
+        localStorage.setItem('userCredits', newCredits.toString());
+        return newCredits;
+      });
+      setMessage(`✅ Token detected! +${creditAmount} kg CO₂e added to your account`);
+      setTimeout(() => setMessage(''), 3000);
       // Clean up URL by removing the token parameter
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
@@ -72,8 +80,15 @@ export default function GamePage() {
 
       qrScanner.render((decodedText: string) => {
         console.log('Scanned:', decodedText);
-        // Assume any scanned QR is a valid token
-        setHasToken(true);
+        // Add 10kg CO2e credits when QR is scanned
+        const creditAmount = 10;
+        setUserCredits(prev => {
+          const newCredits = prev + creditAmount;
+          localStorage.setItem('userCredits', newCredits.toString());
+          return newCredits;
+        });
+        setMessage(`✅ QR Code scanned! +${creditAmount} kg CO₂e added to your account`);
+        setTimeout(() => setMessage(''), 3000);
         setShowScanner(false);
         qrScanner.clear();
       }, (errorMessage: string) => {
@@ -302,6 +317,27 @@ export default function GamePage() {
           </div>
         </div>
 
+        {/* QR Scanner */}
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">📱 สแกน QR เพื่อรับเครดิต</h2>
+          {!showScanner ? (
+            <button
+              onClick={() => setShowScanner(true)}
+              className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
+            >
+              🔍 สแกน QR Code (+10 kg CO₂e)
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowScanner(false)}
+              className="w-full sm:w-auto px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base font-medium"
+            >
+              ยกเลิก
+            </button>
+          )}
+          <div id="qr-reader" className="mt-4 max-w-sm mx-auto" style={{ display: showScanner ? 'block' : 'none' }}></div>
+        </div>
+
         {/* Card Reveal System */}
         <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
           {message && (
@@ -430,6 +466,7 @@ export default function GamePage() {
             <li>ระดับความหายาก: Common (10 Baht), Uncommon (20 Baht), Rare (50 Baht), Legendary (100 Baht)</li>
             <li>โอกาสได้รับ: Common 40%, Uncommon 30%, Rare 20%, Legendary 10%</li>
             <li>คูปองที่ได้จะถูกเพิ่มเข้าบัญชีของคุณทันที</li>
+            <li>สแกน QR Code เพื่อเพิ่ม 10kg CO₂e ต่อครั้ง</li>
             <li>ซื้อกาแฟจาก "ร้านกาแฟ" เพื่อรับเครดิต CO₂e เพิ่มเติม</li>
           </ul>
         </div>
