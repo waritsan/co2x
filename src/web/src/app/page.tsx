@@ -58,6 +58,10 @@ export default function Home() {
     if (savedCredits) {
       setUserCredits(parseInt(savedCredits));
     }
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) {
+      setUserBalance(parseInt(savedBalance));
+    }
   }, []);
 
   const handleClearData = () => {
