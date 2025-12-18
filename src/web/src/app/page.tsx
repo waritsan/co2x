@@ -191,8 +191,8 @@ export default function Home() {
                 หน้าแรก
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
               </Link>
-              <Link href="/game" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
-                เกมลอตเตอรี่
+              <Link href="/games" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+                เกม
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
               <Link href="/coffee" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
@@ -231,11 +231,11 @@ export default function Home() {
                 หน้าแรก
               </Link>
               <Link
-                href="/game"
+                href="/games"
                 className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                เกมลอตเตอรี่
+                เกม
               </Link>
               <Link
                 href="/coffee"

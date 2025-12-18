@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2X Gacha QR Code Generator - Multi</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #059669;
+            text-align: center;
+        }
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            min-width: 150px;
+        }
+        button {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #047857;
+        }
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .qr-item {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .url-display {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .preset-buttons button {
+            background: #10B981;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .preset-buttons button:hover {
+            background: #059669;
+        }
+        h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CO2X Gacha QR Code Generator</h1>
+        <p>Generate QR codes for different CO₂e credit amounts. Each QR code directs users to the gacha game with the specified credit amount.</p>
+
+        <div class="input-section">
+            <label for="amount">Enter CO₂e amount (kg):</label>
+            <input type="number" id="amount" placeholder="e.g., 0.5" step="0.1" min="0.1">
+            <button onclick="generateCustomQR()">Generate QR Code</button>
+        </div>
+
+        <div class="preset-buttons">
+            <strong>Quick presets:</strong>
+            <button onclick="generateQRForAmount(0.3)">Espresso (0.3kg)</button>
+            <button onclick="generateQRForAmount(0.5)">Americano (0.5kg)</button>
+            <button onclick="generateQRForAmount(0.8)">Latte (0.8kg)</button>
+            <button onclick="generateQRForAmount(1.0)">Mocha (1.0kg)</button>
+            <button onclick="generateQRForAmount(5)">Medium (5kg)</button>
+            <button onclick="generateQRForAmount(10)">Large (10kg)</button>
+        </div>
+
+        <div class="qr-grid" id="qrGrid"></div>
+    </div>
+
+    <script>
+        function generateQRForAmount(amount) {
+            const container = document.getElementById('qrGrid');
+            const baseUrl = 'https://lively-mushroom-09f901e00.3.azurestaticapps.net/game?token=gacha:';
+            const url = baseUrl + amount;
+
+            // Check if QR for this amount already exists
+            const existing = document.querySelector(`[data-amount="${amount}"]`);
+            if (existing) {
+                existing.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            const qrItem = document.createElement('div');
+            qrItem.className = 'qr-item';
+            qrItem.setAttribute('data-amount', amount);
+
+            const title = document.createElement('h3');
+            title.textContent = amount + ' kg CO₂e';
+            qrItem.appendChild(title);
+
+            const urlDisplay = document.createElement('div');
+            urlDisplay.className = 'url-display';
+            urlDisplay.innerHTML = '<strong>URL:</strong><br>' + url;
+            qrItem.appendChild(urlDisplay);
+
+            const qrContainer = document.createElement('div');
+            qrContainer.className = 'qr-container';
+            qrItem.appendChild(qrContainer);
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'Download QR Code';
+            downloadBtn.onclick = () => downloadQRForElement(qrContainer, amount);
+            qrItem.appendChild(downloadBtn);
+
+            container.appendChild(qrItem);
+
+            // Generate QR code
+            const qr = qrcode(0, 'M');
+            qr.addData(url);
+            qr.make();
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = qr.getModuleCount();
+            const cellSize = 256 / size;
+
+            canvas.width = 256;
+            canvas.height = 256;
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            qrContainer.appendChild(canvas);
+        }
+
+        function generateCustomQR() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            generateQRForAmount(amount);
+            document.getElementById('amount').value = '';
+        }
+
+        function downloadQRForElement(element, amount) {
+            const canvas = element.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `co2x-gacha-qr-${amount}kg.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        // Generate presets on page load
+        window.onload = () => {
+            generateQRForAmount(0.3);
+            generateQRForAmount(0.5);
+            generateQRForAmount(0.8);
+            generateQRForAmount(1.0);
+            generateQRForAmount(5);
+            generateQRForAmount(10);
+        };
+    </script>
+</body>
+</html>
