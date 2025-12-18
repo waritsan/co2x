@@ -60,6 +60,17 @@ export default function Home() {
     }
   }, []);
 
+  const handleClearData = () => {
+    if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+      localStorage.removeItem('userCredits');
+      localStorage.removeItem('userBalance');
+      setUserCredits(1250);
+      setUserBalance(625000);
+      setMessage('Data cleared and reset to initial values');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
   // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -265,6 +276,12 @@ export default function Home() {
             <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-2">{transactions.length}</p>
             <p className="text-xs sm:text-sm text-gray-500">รอการชำระ</p>
           </div>
+          <button
+            onClick={handleClearData}
+            className="sm:col-span-2 lg:col-span-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+          >
+            🗑️ Clear All Data
+          </button>
         </div>
 
         {/* Search and Filter */}
