@@ -51,6 +51,8 @@ export default function GamesPage() {
   const [weeklySpinning, setWeeklySpinning] = useState(false);
   const [weeklyResults, setWeeklyResults] = useState<string[]>(['?', '?', '?']);
   const [weeklyPrize, setWeeklyPrize] = useState<Prize | null>(null);
+  const [weeklyReelSpins, setWeeklyReelSpins] = useState<number[]>([0, 0, 0]);
+  const [reelStopped, setReelStopped] = useState<boolean[]>([false, false, false]);
 
   // Monthly game (wheel) state
   const [monthlySpinning, setMonthlySpinning] = useState(false);
@@ -205,11 +207,27 @@ export default function GamesPage() {
     setWeeklySpinning(true);
     setWeeklyResults(['?', '?', '?']);
     setWeeklyPrize(null);
+    setReelStopped([false, false, false]);
 
+    // Stagger the reel stops for realistic slot machine feel
+    const spinDurations = [2500, 3000, 3500]; // Each reel spins for different duration
+    const prizes = [weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)],
+                    weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)],
+                    weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)]];
+
+    // Stop each reel sequentially
+    spinDurations.forEach((duration, index) => {
+      setTimeout(() => {
+        setReelStopped(prev => {
+          const newStopped = [...prev];
+          newStopped[index] = true;
+          return newStopped;
+        });
+      }, duration);
+    });
+
+    // Final results after all reels stop
     setTimeout(() => {
-      const prizes = [weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)],
-                      weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)],
-                      weeklyPrizes[Math.floor(Math.random() * weeklyPrizes.length)]];
       setWeeklyResults([prizes[0].label, prizes[1].label, prizes[2].label]);
 
       // Main prize is the middle one
@@ -225,7 +243,7 @@ export default function GamesPage() {
       setMessage(`🎰 You won: ${winnerPrize.label}! +${winnerPrize.value} Baht`);
       setTimeout(() => setMessage(''), 3000);
       setWeeklySpinning(false);
-    }, 3000);
+    }, 3500);
   };
 
   const playMonthlyGame = () => {
@@ -361,11 +379,11 @@ export default function GamesPage() {
         )}
 
         {/* Game Selection Tabs */}
-        <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
-          <div className="flex flex-wrap">
+        <div className="bg-white rounded-lg shadow mb-8 overflow-visible">
+          <div className="flex w-full">
             <button
               onClick={() => { setActiveGame('daily'); setCardFlipped([false, false, false]); setSelectedCard(null); setDailyResults([null, null, null]); }}
-              className={`flex-1 px-4 py-4 font-semibold transition-colors ${
+              className={`flex-1 min-w-0 px-2 sm:px-4 py-3 sm:py-4 font-semibold transition-colors text-xs sm:text-sm md:text-base ${
                 activeGame === 'daily'
                   ? 'bg-green-600 text-white border-b-4 border-green-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -375,7 +393,7 @@ export default function GamesPage() {
             </button>
             <button
               onClick={() => { setActiveGame('weekly'); setWeeklyResults(['?', '?', '?']); setWeeklyPrize(null); }}
-              className={`flex-1 px-4 py-4 font-semibold transition-colors ${
+              className={`flex-1 min-w-0 px-2 sm:px-4 py-3 sm:py-4 font-semibold transition-colors text-xs sm:text-sm md:text-base ${
                 activeGame === 'weekly'
                   ? 'bg-blue-600 text-white border-b-4 border-blue-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -385,7 +403,7 @@ export default function GamesPage() {
             </button>
             <button
               onClick={() => { setActiveGame('monthly'); setWheelRotation(0); setMonthlyPrize(null); }}
-              className={`flex-1 px-4 py-4 font-semibold transition-colors ${
+              className={`flex-1 min-w-0 px-2 sm:px-4 py-3 sm:py-4 font-semibold transition-colors text-xs sm:text-sm md:text-base ${
                 activeGame === 'monthly'
                   ? 'bg-yellow-600 text-white border-b-4 border-yellow-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -440,15 +458,33 @@ export default function GamesPage() {
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
             <h2 className="text-lg sm:text-xl font-semibold mb-4">🎰 Weekly Slot Machine (5kg per play)</h2>
             <div className="flex flex-col items-center gap-8">
-              <div className="flex gap-4 justify-center text-4xl font-bold">
-                {weeklyResults.map((result, index) => (
+              {/* Slot Machine Reels */}
+              <div className="flex gap-2 justify-center bg-gradient-to-r from-yellow-900 to-yellow-800 p-6 rounded-lg shadow-lg border-4 border-yellow-700">
+                {[0, 1, 2].map((reelIndex) => (
                   <div
-                    key={index}
-                    className={`w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white border-4 border-blue-300 ${
-                      weeklySpinning ? 'animate-bounce' : ''
-                    }`}
+                    key={reelIndex}
+                    className="w-24 h-24 bg-gradient-to-br from-blue-300 to-blue-500 rounded-lg border-4 border-blue-400 shadow-inner overflow-hidden"
                   >
-                    {result}
+                    <div
+                      className={`slot-reel-container h-full ${
+                        weeklySpinning && !reelStopped[reelIndex] ? `spin-reel-${reelIndex}` : ''
+                      }`}
+                    >
+                      {weeklySpinning && !reelStopped[reelIndex] ? (
+                        // Show multiple items while spinning
+                        <div className="slot-reel">
+                          {[...weeklyPrizes, ...weeklyPrizes, ...weeklyPrizes, ...weeklyPrizes].map((prize, i) => (
+                            <div key={i} className="slot-reel-item text-xs sm:text-sm">
+                              {prize.label.split(' ')[0]}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg sm:text-2xl">
+                          {weeklyResults[reelIndex]}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
