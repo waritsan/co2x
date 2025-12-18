@@ -148,6 +148,7 @@ export default function Home() {
     setBuyAmount('');
     setMessage(`ซื้อ ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
     localStorage.setItem('userCredits', (userCredits + amount).toString());
+    localStorage.setItem('userBalance', (userBalance - cost).toString());
     setTimeout(() => setMessage(''), 3000);
   };
 
@@ -172,6 +173,7 @@ export default function Home() {
     setSellAmount('');
     setMessage(`ขาย ${selectedProduct.project} ${amount} tCO2e สำเร็จ`);
     localStorage.setItem('userCredits', (userCredits - amount).toString());
+    localStorage.setItem('userBalance', (userBalance + revenue).toString());
     setTimeout(() => setMessage(''), 3000);
   };
 
