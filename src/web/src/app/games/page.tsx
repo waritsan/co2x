@@ -453,6 +453,22 @@ export default function GamesPage() {
                     </div>
                   ))}
                 </div>
+                {/* Replay Button */}
+                {cardFlipped.some(flipped => flipped) && (
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => {
+                        setCardFlipped([false, false, false]);
+                        setDailyResults([null, null, null]);
+                        setSelectedCard(null);
+                        setShowParticles([false, false, false]);
+                      }}
+                      className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      🔄 Replay
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="space-y-4">
                 <h3 className="font-semibold text-gray-900">Prize Tiers:</h3>
