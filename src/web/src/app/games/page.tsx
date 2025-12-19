@@ -423,17 +423,33 @@ export default function GamesPage() {
                 <p className="text-sm text-gray-600 mb-4">Select a card to reveal the prize</p>
                 <div className="flex justify-center items-center gap-4 mb-6">
                   {cardsVisible && [0, 1, 2].map((index) => (
-                    <div
-                      key={index}
-                      onClick={() => playDailyGame(index)}
-                      className={`w-24 h-32 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg border-4 border-yellow-300 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform ${
-                        userCredits < 1 ? 'opacity-40 cursor-not-allowed hover:scale-100' : ''
-                      } ${cardFlipped[index] ? 'hidden' : 'visible'}`}
-                    >
-                      <div className="text-center">
-                        <div className="text-3xl mb-2">🌿</div>
-                        <div className="text-xs font-bold text-yellow-50">?</div>
-                      </div>
+                    <div key={index} className="relative w-24 h-32">
+                      {/* Unflipped Card */}
+                      {!cardFlipped[index] && (
+                        <div
+                          onClick={() => playDailyGame(index)}
+                          className={`absolute inset-0 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg border-4 border-yellow-300 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform ${
+                            userCredits < 1 ? 'opacity-40 cursor-not-allowed hover:scale-100' : ''
+                          }`}
+                        >
+                          <div className="text-center">
+                            <div className="text-3xl mb-2">🌿</div>
+                            <div className="text-xs font-bold text-yellow-50">?</div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Flipped Card showing Prize */}
+                      {cardFlipped[index] && dailyResults[index] && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-green-300 to-green-600 rounded-lg border-4 border-green-400 flex items-center justify-center text-center">
+                          <div>
+                            <div className="text-lg font-bold text-green-900">{dailyResults[index]}</div>
+                            {showParticles[index] && (
+                              <div className="text-2xl mt-2">✨</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
