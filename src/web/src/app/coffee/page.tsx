@@ -89,6 +89,10 @@ export default function CoffeePage() {
                 เกม
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
               </Link>
+              <Link href="/market" className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group rounded-md hover:bg-green-50">
+                ตลาด
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
               <Link href="/coffee" className="px-4 py-2 text-green-600 font-medium transition-colors duration-200 relative rounded-md">
                 ร้านกาแฟ
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-600"></span>
@@ -130,6 +134,13 @@ export default function CoffeePage() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 เกม
+              </Link>
+              <Link
+                href="/market"
+                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                ตลาด
               </Link>
               <Link
                 href="/coffee"
