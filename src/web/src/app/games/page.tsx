@@ -499,7 +499,8 @@ export default function GamesPage() {
         {/* Weekly Game - Slot Machine */}
         {activeGame === 'weekly' && (
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎰 Weekly Game (5kg per play)</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-2">🎰 Weekly Game (5kg per play)</h2>
+            <p className="text-sm text-gray-600 mb-4">🏆 Grand Prize: <span className="font-bold text-yellow-600">1 Baht Gold</span> (0.01% chance)</p>
             <div className="flex flex-col items-center gap-8">
               {/* Slot Machine Reels */}
               <div className="flex gap-2 justify-center bg-gradient-to-r from-yellow-900 to-yellow-800 p-6 rounded-lg shadow-lg border-4 border-yellow-700">
@@ -560,7 +561,8 @@ export default function GamesPage() {
         {/* Monthly Game - Wheel of Fortune */}
         {activeGame === 'monthly' && (
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎡 Monthly Game (20kg per play)</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-2">🎡 Monthly Game (20kg per play)</h2>
+            <p className="text-sm text-gray-600 mb-4">🏆 Grand Prize: <span className="font-bold text-red-600">Tesla</span> (0.005% chance - 1 in 20,000!)</p>
             <div className="flex flex-col items-center gap-8">
               <div
                 className={`relative w-64 h-64 rounded-full bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 border-8 border-yellow-600 flex items-center justify-center transition-transform duration-3000 ${
