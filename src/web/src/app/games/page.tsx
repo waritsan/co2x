@@ -16,14 +16,14 @@ const weeklyPrizes = [
   { label: '50 Baht Coupon', value: 50, color: '#3B82F6', rarity: 'Common', probability: 0.88 },
   { label: '100 Baht Coupon', value: 100, color: '#1D4ED8', rarity: 'Uncommon', probability: 0.09 },
   { label: '200 Baht Coupon', value: 200, color: '#1E40AF', rarity: 'Rare', probability: 0.02 },
-  { label: '500 Baht Coupon', value: 500, color: '#1E3A8A', rarity: 'Legendary', probability: 0.01 },
+  { label: '1 Baht Gold', value: 1, color: '#1E3A8A', rarity: 'Legendary', probability: 0.01 },
 ];
 
 const monthlyPrizes = [
   { label: '500 Baht Coupon', value: 500, color: '#F59E0B', rarity: 'Common', probability: 0.92 },
   { label: '1000 Baht Coupon', value: 1000, color: '#D97706', rarity: 'Uncommon', probability: 0.06 },
   { label: '2000 Baht Coupon', value: 2000, color: '#B45309', rarity: 'Rare', probability: 0.015 },
-  { label: '5000 Baht Coupon', value: 5000, color: '#92400E', rarity: 'Legendary', probability: 0.005 },
+  { label: 'Tesla', value: 1, color: '#92400E', rarity: 'Legendary', probability: 0.005 },
 ];
 
 type Prize = typeof dailyPrizes[0];
