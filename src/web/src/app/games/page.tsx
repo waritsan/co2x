@@ -546,11 +546,14 @@ export default function GamesPage() {
                   <p className="text-sm text-blue-700">+{weeklyPrize.value} Baht</p>
                 </div>
               )}
-              <div className="grid grid-cols-2 gap-2 w-full max-w-md">
+              <div className="w-full space-y-4">
+                <h3 className="font-semibold text-gray-900">Prize Tiers:</h3>
                 {weeklyPrizes.map((prize) => (
-                  <div key={prize.label} className="p-2 bg-gray-50 rounded text-xs">
-                    <div className="font-semibold">{prize.label}</div>
-                    <div className="text-gray-600">{(prize.probability * 100).toFixed(0)}%</div>
+                  <div key={prize.label} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm">{prize.label}</span>
+                    <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background: prize.color, color: 'white' }}>
+                      {(prize.probability * 100).toFixed(2)}%
+                    </span>
                   </div>
                 ))}
               </div>
@@ -589,11 +592,14 @@ export default function GamesPage() {
                   <p className="text-sm text-yellow-700">+{monthlyPrize.value} Baht</p>
                 </div>
               )}
-              <div className="grid grid-cols-2 gap-2 w-full max-w-md">
+              <div className="w-full space-y-4">
+                <h3 className="font-semibold text-gray-900">Prize Tiers:</h3>
                 {monthlyPrizes.map((prize) => (
-                  <div key={prize.label} className="p-2 bg-gray-50 rounded text-xs">
-                    <div className="font-semibold">{prize.label}</div>
-                    <div className="text-gray-600">{(prize.probability * 100).toFixed(0)}%</div>
+                  <div key={prize.label} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm">{prize.label}</span>
+                    <span className="text-xs font-semibold px-2 py-1 rounded-full" style={{ background: prize.color, color: 'white' }}>
+                      {(prize.probability * 100).toFixed(3)}%
+                    </span>
                   </div>
                 ))}
               </div>
