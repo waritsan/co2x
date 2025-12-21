@@ -13,17 +13,17 @@ const dailyPrizes = [
 ];
 
 const weeklyPrizes = [
-  { label: '50 Baht Coupon', value: 50, color: '#3B82F6', rarity: 'Common', probability: 0.4 },
-  { label: '100 Baht Coupon', value: 100, color: '#1D4ED8', rarity: 'Uncommon', probability: 0.3 },
-  { label: '200 Baht Coupon', value: 200, color: '#1E40AF', rarity: 'Rare', probability: 0.2 },
-  { label: '500 Baht Coupon', value: 500, color: '#1E3A8A', rarity: 'Legendary', probability: 0.1 },
+  { label: '50 Baht Coupon', value: 50, color: '#3B82F6', rarity: 'Common', probability: 0.88 },
+  { label: '100 Baht Coupon', value: 100, color: '#1D4ED8', rarity: 'Uncommon', probability: 0.09 },
+  { label: '200 Baht Coupon', value: 200, color: '#1E40AF', rarity: 'Rare', probability: 0.02 },
+  { label: '500 Baht Coupon', value: 500, color: '#1E3A8A', rarity: 'Legendary', probability: 0.01 },
 ];
 
 const monthlyPrizes = [
-  { label: '500 Baht Coupon', value: 500, color: '#F59E0B', rarity: 'Common', probability: 0.4 },
-  { label: '1000 Baht Coupon', value: 1000, color: '#D97706', rarity: 'Uncommon', probability: 0.3 },
-  { label: '2000 Baht Coupon', value: 2000, color: '#B45309', rarity: 'Rare', probability: 0.2 },
-  { label: '5000 Baht Coupon', value: 5000, color: '#92400E', rarity: 'Legendary', probability: 0.1 },
+  { label: '500 Baht Coupon', value: 500, color: '#F59E0B', rarity: 'Common', probability: 0.92 },
+  { label: '1000 Baht Coupon', value: 1000, color: '#D97706', rarity: 'Uncommon', probability: 0.06 },
+  { label: '2000 Baht Coupon', value: 2000, color: '#B45309', rarity: 'Rare', probability: 0.015 },
+  { label: '5000 Baht Coupon', value: 5000, color: '#92400E', rarity: 'Legendary', probability: 0.005 },
 ];
 
 type Prize = typeof dailyPrizes[0];
@@ -428,7 +428,7 @@ export default function GamesPage() {
         {/* Daily Game - Gacha */}
         {activeGame === 'daily' && (
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">📅 Daily Gacha (1kg per play)</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">📅 Daily Game (1kg per play)</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-gray-600 mb-4">Select a card to reveal the prize</p>
@@ -499,7 +499,7 @@ export default function GamesPage() {
         {/* Weekly Game - Slot Machine */}
         {activeGame === 'weekly' && (
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎰 Weekly Slot Machine (5kg per play)</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎰 Weekly Game (5kg per play)</h2>
             <div className="flex flex-col items-center gap-8">
               {/* Slot Machine Reels */}
               <div className="flex gap-2 justify-center bg-gradient-to-r from-yellow-900 to-yellow-800 p-6 rounded-lg shadow-lg border-4 border-yellow-700">
@@ -560,7 +560,7 @@ export default function GamesPage() {
         {/* Monthly Game - Wheel of Fortune */}
         {activeGame === 'monthly' && (
           <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-8">
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎡 Monthly Wheel of Fortune (20kg per play)</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4">🎡 Monthly Game (20kg per play)</h2>
             <div className="flex flex-col items-center gap-8">
               <div
                 className={`relative w-64 h-64 rounded-full bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 border-8 border-yellow-600 flex items-center justify-center transition-transform duration-3000 ${
