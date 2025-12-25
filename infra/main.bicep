@@ -38,8 +38,7 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 //   Microsoft.Web/sites for appservice, function
 // Example usage:
 //   tags: union(tags, { 'azd-service-name': apiServiceName })
-#disable-next-line no-unused-vars
-var apiServiceName = 'python-api'
+var apiServiceName = 'api'
 var webServiceName = 'web'
 
 // Organize resources in a resource group
@@ -63,6 +62,55 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
   }
 }
 
+// App Service Plan for Function App
+module appServicePlan './core/host/appserviceplan.bicep' = {
+  name: 'appserviceplan'
+  scope: rg
+  params: {
+    name: '${abbrs.appServicePlans}${environmentName}'
+    location: location
+    sku: {
+      name: 'Y1'
+      tier: 'Dynamic'
+    }
+    tags: tags
+  }
+}
+
+// Storage Account for Function App
+module storage './core/database/storage.bicep' = {
+  name: 'storage'
+  scope: rg
+  params: {
+    name: '${abbrs.storageAccounts}${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
+// Azure Function App for API
+module functionApp './core/host/functions.bicep' = {
+  name: 'functionapp'
+  scope: rg
+  params: {
+    name: '${abbrs.functions}${environmentName}'
+    location: location
+    tags: union(tags, { 'azd-service-name': apiServiceName })
+    appServicePlanId: appServicePlan.outputs.id
+    storageAccountName: storage.outputs.name
+    runtimeName: 'node'
+    runtimeVersion: '20'
+    allowedOrigins: [
+      staticwebapp.outputs.uri
+    ]
+    appSettings: {
+      LINE_CHANNEL_ID: ''
+      LINE_CHANNEL_SECRET: ''
+      ALLOWED_ORIGINS: staticwebapp.outputs.uri
+    }
+  }
+}
+
 // Add outputs from the deployment here, if needed.
 //
 // This allows the outputs to be referenced by other bicep deployments in the deployment pipeline,
@@ -73,5 +121,7 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
 // To see these outputs, run `azd env get-values`,  or `azd env get-values --output json` for json output.
 output WEB_URI string = staticwebapp.outputs.uri
 output WEB_NAME string = staticwebapp.outputs.name
+output API_URI string = 'https://${functionApp.outputs.name}.azurewebsites.net'
+output API_NAME string = functionApp.outputs.name
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
