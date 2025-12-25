@@ -62,18 +62,19 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
   }
 }
 
-// App Service Plan for API
+// App Service Plan for Functions (Consumption tier - serverless)
 module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: rg
   params: {
-    name: '${abbrs.webServerFarms}api-${environmentName}'
+    name: '${abbrs.webServerFarms}${environmentName}'
     location: location
     sku: {
-      name: 'B1'
-      tier: 'Basic'
+      name: 'Y1'
+      tier: 'Dynamic'
     }
-    kind: 'linux'
+    kind: ''
+    reserved: false
     tags: tags
   }
 }
@@ -89,23 +90,25 @@ module storage './core/database/storage.bicep' = {
   }
 }
 
-// Azure Function App for API
-module functionApp './core/host/appservice.bicep' = {
+// Azure Function App for API (serverless)
+module functionApp './core/host/functions.bicep' = {
   name: 'functionapp'
   scope: rg
   params: {
-    name: '${abbrs.webSitesAppService}api-${environmentName}'
+    name: '${abbrs.webSitesFunctions}${environmentName}'
     location: location
     tags: union(tags, { 'azd-service-name': apiServiceName })
     appServicePlanId: appServicePlan.outputs.id
+    storageAccountName: storage.outputs.name
     runtimeName: 'node'
     runtimeVersion: '20'
-    kind: 'app,linux'
-    linuxFxVersion: 'NODE|20'
+    extensionVersion: '~4'
+    kind: 'functionapp,linux'
     allowedOrigins: [
       staticwebapp.outputs.uri
     ]
     appSettings: {
+      WEBSITE_RUN_FROM_PACKAGE: '1'
       LINE_CHANNEL_ID: ''
       LINE_CHANNEL_SECRET: ''
       ALLOWED_ORIGINS: staticwebapp.outputs.uri
