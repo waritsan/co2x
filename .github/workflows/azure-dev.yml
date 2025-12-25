@@ -23,6 +23,9 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      # LINE OAuth Configuration for Production Build
+      NEXT_PUBLIC_LINE_CHANNEL_ID: ${{ secrets.LINE_CHANNEL_ID }}
+      NEXT_PUBLIC_LINE_BACKEND_URL: ${{ vars.LINE_BACKEND_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,4 +45,3 @@ jobs:
 
       - name: Deploy Application
         run: azd deploy --no-prompt
-        
