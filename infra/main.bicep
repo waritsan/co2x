@@ -62,16 +62,16 @@ module staticwebapp './core/host/staticwebapp.bicep' = {
   }
 }
 
-// App Service Plan for Function App
+// App Service Plan for API
 module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: rg
   params: {
-    name: '${abbrs.webServerFarms}${environmentName}'
+    name: '${abbrs.webServerFarms}api-${environmentName}'
     location: location
     sku: {
-      name: 'Y1'
-      tier: 'Dynamic'
+      name: 'B1'
+      tier: 'Basic'
     }
     kind: 'linux'
     tags: tags
