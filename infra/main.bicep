@@ -67,12 +67,13 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: rg
   params: {
-    name: '${abbrs.appServicePlans}${environmentName}'
+    name: '${abbrs.webServerFarms}${environmentName}'
     location: location
     sku: {
       name: 'Y1'
       tier: 'Dynamic'
     }
+    kind: 'linux'
     tags: tags
   }
 }
@@ -82,7 +83,7 @@ module storage './core/database/storage.bicep' = {
   name: 'storage'
   scope: rg
   params: {
-    name: '${abbrs.storageAccounts}${resourceToken}'
+    name: '${abbrs.storageStorageAccounts}${resourceToken}'
     location: location
     tags: tags
   }
@@ -93,7 +94,7 @@ module functionApp './core/host/functions.bicep' = {
   name: 'functionapp'
   scope: rg
   params: {
-    name: '${abbrs.functions}${environmentName}'
+    name: '${abbrs.webSitesFunctions}${environmentName}'
     location: location
     tags: union(tags, { 'azd-service-name': apiServiceName })
     appServicePlanId: appServicePlan.outputs.id
