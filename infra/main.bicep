@@ -73,8 +73,8 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
       name: 'Y1'
       tier: 'Dynamic'
     }
-    kind: ''
-    reserved: false
+    kind: 'functionapp'
+    reserved: true
     tags: tags
   }
 }
