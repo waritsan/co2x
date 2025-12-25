@@ -12,3 +12,8 @@ services:
     project: ./src/web
     host: staticwebapp
     dist: out
+  api:
+    language: ts
+    project: ./src/api
+    host: function
+    module: ./src/api
