@@ -90,17 +90,18 @@ module storage './core/database/storage.bicep' = {
 }
 
 // Azure Function App for API
-module functionApp './core/host/functions.bicep' = {
+module functionApp './core/host/appservice.bicep' = {
   name: 'functionapp'
   scope: rg
   params: {
-    name: '${abbrs.webSitesFunctions}${environmentName}'
+    name: '${abbrs.webSitesAppService}api-${environmentName}'
     location: location
     tags: union(tags, { 'azd-service-name': apiServiceName })
     appServicePlanId: appServicePlan.outputs.id
-    storageAccountName: storage.outputs.name
     runtimeName: 'node'
     runtimeVersion: '20'
+    kind: 'app,linux'
+    linuxFxVersion: 'NODE|20'
     allowedOrigins: [
       staticwebapp.outputs.uri
     ]
