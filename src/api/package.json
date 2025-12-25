@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for CO2X LINE Login",
+  "scripts": {
+    "build": "tsc && npm run copy-functions",
+    "copy-functions": "cp lineCallback/function.json dist/lineCallback/ && cp lineProfile/function.json dist/lineProfile/",
+    "watch": "tsc -w",
+    "prestart": "npm run build",
+    "start": "node dist/server.js",
+    "azure": "func start",
+    "dev": "npm run build && node dist/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

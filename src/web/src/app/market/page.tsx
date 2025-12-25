@@ -170,7 +170,7 @@ export default function MarketPage() {
       <header className="bg-white shadow-sm relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-green-600">WinFor.Earth</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-green-600">Carbon Credit For Earth</h1>
 
             {/* Desktop Navigation */}
             <nav className="hidden sm:flex items-center space-x-6 lg:space-x-12">

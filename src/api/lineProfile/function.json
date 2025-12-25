@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "function": "lineProfile",
+  "trigger": {
+    "authLevel": "anonymous",
+    "type": "httpTrigger",
+    "direction": "in",
+    "name": "request",
+    "methods": ["get", "post", "options"]
+  },
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "http",
+      "direction": "out",
+      "name": "$return"
+    }
+  ]
+}
