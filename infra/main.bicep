@@ -110,6 +110,8 @@ module functionApp './core/host/functions.bicep' = {
     ]
     appSettings: {
       WEBSITE_RUN_FROM_PACKAGE: '1'
+      WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storage.outputs.connectionString
+      AzureWebJobsStorage: storage.outputs.connectionString
       LINE_CHANNEL_ID: ''
       LINE_CHANNEL_SECRET: ''
       ALLOWED_ORIGINS: staticwebapp.outputs.uri
