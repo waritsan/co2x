@@ -104,6 +104,7 @@ module functionApp './core/host/functions.bicep' = {
     runtimeVersion: '20'
     extensionVersion: '~4'
     kind: 'functionapp,linux'
+    alwaysOn: false
     allowedOrigins: [
       staticwebapp.outputs.uri
     ]
