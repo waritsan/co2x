@@ -50,7 +50,34 @@ jobs:
           echo "API_URI=$apiUri" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
-      - name: Deploy Application
-        run: azd deploy --no-prompt
+      - name: Deploy Backend (Azure Functions)
+        run: azd deploy api --no-prompt
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build Frontend
+        working-directory: ./src/web
         env:
+          NEXT_PUBLIC_LINE_CHANNEL_ID: ${{ secrets.LINE_CHANNEL_ID }}
           NEXT_PUBLIC_LINE_BACKEND_URL: ${{ steps.azure.outputs.API_URI }}
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Deploy Frontend (Static Web App)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "./src/web/out"
+          output_location: ""
+          skip_app_build: true

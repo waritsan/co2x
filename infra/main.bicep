@@ -111,6 +111,7 @@ module functionApp './core/host/functions.bicep' = {
     appSettings: {
       WEBSITE_RUN_FROM_PACKAGE: '1'
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storage.outputs.connectionString
+      WEBSITE_CONTENTSHARE: 'func-${resourceToken}'
       AzureWebJobsStorage: storage.outputs.connectionString
       LINE_CHANNEL_ID: ''
       LINE_CHANNEL_SECRET: ''
